@@ -1,83 +1,71 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo />
-        <VuetifyLogo />
-      </v-card>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
+  <v-row class="fill-height my-0 mx-0 white">
+    <v-col cols="12" md="6" class="px-0 py-0">
+      <v-img cover class="fill-height" :src="require('~/assets/banner.jpg')" alt="Logo de fundación" />
+    </v-col>
+    <v-col cols="12" md="6">
+      <v-row class="fill-height" align="center">
+        <v-col>
+          <h1 class="primary--text text-center mb-3">
+            Sonrisas Fuertes
+          </h1>
+          <p class="headline text-center">
+            Iniciar sesión
           </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+          <form class="text-center" @submit.prevent="login">
+            <v-text-field
+              v-model="user"
+              autocomplete="current-password"
+              filled
+              dense
+              label="Usuario"
+            />
+            <v-text-field
+              v-model="password"
+              autocomplete="current-password"
+              filled
+              dense
+              label="Contraseña"
+              type="password"
+            />
+            <v-container class="text-end mb-3">
+              <a href="#" class="text-decoration-none caption font-weight-medium">¿Olvidó su contraseña?</a>
+            </v-container>
+            <v-btn class="primary" type="submit">
+              INICIAR SESIÓN
+            </v-btn>
+          </form>
+        </v-col>
+      </v-row>
     </v-col>
   </v-row>
 </template>
 
 <script>
 export default {
-  name: 'IndexPage'
+  name: 'IndexPage',
+  layout: 'auth',
+  data () {
+    return {
+      user: '',
+      password: '',
+      count: 0
+    }
+  },
+
+  methods: {
+    login () {
+      const json = {
+        usuario: this.user,
+        password: this.password
+      }
+      // eslint-disable-next-line no-console
+      console.log(json)
+    }
+  }
 }
+
 </script>
+
+<style scoped>
+</style>
