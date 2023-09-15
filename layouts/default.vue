@@ -40,10 +40,29 @@
       <v-spacer />
       <v-btn
         icon
+        class="white--text"
         @click.stop="rightDrawer = !rightDrawer"
       >
         <v-icon>
-          mdi-menu
+          mdi-magnify
+        </v-icon>
+      </v-btn>
+      <v-btn
+        icon
+        class="white--text"
+        @click.stop="rightDrawer = !rightDrawer"
+      >
+        <v-icon>
+          mdi-message-text-outline
+        </v-icon>
+      </v-btn>
+      <v-btn
+        icon
+        class="white--text"
+        @click.stop="rightDrawer = !rightDrawer"
+      >
+        <v-icon>
+          mdi-bell-outline
         </v-icon>
       </v-btn>
     </v-app-bar>
