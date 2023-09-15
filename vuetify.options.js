@@ -17,7 +17,7 @@ export default function ({ app }) {
       }
     },
     icons: {
-      iconfont: 'mdiSvg'
+      iconfont: 'mdi'
     }
   }
 }
