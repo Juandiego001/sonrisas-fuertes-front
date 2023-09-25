@@ -4,8 +4,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - sonrisas-fuertes-front',
-    title: 'sonrisas-fuertes-front',
+    titleTemplate: '%s | Sonrisas Fuertes',
+    title: 'Home',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -25,6 +25,8 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    'plugins/axios',
+    'plugins/mixin-global'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -43,14 +45,19 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    // https://github.com/microcipcip/cookie-universal/tree/master/packages/cookie-universal-nuxt#readme
+    ['cookie-universal-nuxt', { alias: 'cookies' }]
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/'
+    baseURL: 'http://localhost:5000',
+    proxy: true
   },
+
+  proxy: { '/api': 'http://localhost:5000' },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {

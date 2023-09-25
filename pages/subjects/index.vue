@@ -1,6 +1,6 @@
 <template>
   <div>
-    Hola mundo desde courses
+    Cursos
   </div>
 </template>
 

@@ -1,13 +1,16 @@
 <template>
   <div>
-    Grupos
+    Reportes
   </div>
 </template>
 
 <script>
 export default {
+  name: 'ReportsPage',
+  layout: 'default',
   data () {
-    return {}
+    return {
+    }
   }
 }
 </script>

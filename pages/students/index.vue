@@ -1,6 +1,6 @@
 <template>
   <div>
-    Hola mundo desde students
+    Estudiantes
   </div>
 </template>
 

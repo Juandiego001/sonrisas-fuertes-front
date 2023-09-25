@@ -1,13 +1,16 @@
 <template>
   <div>
-    Grupos
+    Permisos
   </div>
 </template>
 
 <script>
 export default {
+  name: 'PermissionsPage',
+  layout: 'default',
   data () {
-    return {}
+    return {
+    }
   }
 }
 </script>

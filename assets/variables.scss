@@ -3,3 +3,9 @@
 // The variables you want to modify
 // $font-size-root: 20px;
 $body-font-family: 'Open Sans';
+
+.v-list-item__icon {
+    margin-left: 0px !important;
+}
+
+$btn-text-transform: none !default;
