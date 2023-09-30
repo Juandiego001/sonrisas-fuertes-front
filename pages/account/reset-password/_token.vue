@@ -70,15 +70,6 @@ export default {
   },
 
   async fetch () {
-    // try {
-    //   await this.$axios.$get(`${resetPasswordUrl}/${this.$route.params.token}`)
-    // } catch (err) {
-    //   if (err.response.data.message) {
-    //     this.message = err.response.data.message
-    //   } else {
-    //     this.message = 'MessageError'
-    //   }
-    // }
   },
 
   head () {
@@ -92,13 +83,10 @@ export default {
         if (!this.$refs.form.validate()) { return }
         const { message } = await this.$axios.$patch(
           `${resetPasswordUrl}/${this.$route.params.token}`,
-          { new_password: this.new_password })
-        // eslint-disable-next-line no-console
-        console.log(message)
-        // this.showSnackbar(message)
-        // this.$router.replace('/account/login')
+          { password: this.new_password })
+        this.showSnackbar(message)
       } catch (err) {
-        alert(err)
+        this.showSnackbar(err)
       }
     }
   }

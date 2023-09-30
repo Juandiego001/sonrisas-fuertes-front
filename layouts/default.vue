@@ -108,7 +108,9 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>
-        <a class="white--text text-decoration-none" href="/">{{ title }}</a>
+        <NuxtLink class="white--text text-decoration-none" to="/">
+          Sonrisas Fuertes
+        </NuxtLink>
       </v-toolbar-title>
       <v-spacer />
       <v-btn
@@ -134,6 +136,7 @@
       </v-btn>
       <v-btn
         icon
+        @click="dialogEdit=true"
       >
         <v-icon>
           mdi-plus
@@ -167,8 +170,7 @@ export default {
     return {
       dialogProfile: false,
       profile: {},
-      drawer: false,
-      title: 'Sonrisas fuertes'
+      drawer: false
     }
   },
 

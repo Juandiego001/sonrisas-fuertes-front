@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <v-container fluid>
     <v-data-table
       :headers="headers"
-      :items="teachers"
+      :items="items"
       :server-items-length="total"
       :options.sync="options"
     >
@@ -13,7 +13,7 @@
           color="success"
           depressed
           icon
-          @click="getUser(item)"
+          @click="getTeacher(item)"
         >
           <v-icon>
             mdi-pencil
@@ -30,38 +30,188 @@
         </v-btn>
       </template>
     </v-data-table>
-  </div>
+    <v-dialog
+      v-model="dialogEdit"
+      max-width="600px"
+      :fullscreen="$vuetify.breakpoint.smAndDown"
+      scrollable
+    >
+      <v-form ref="form" @submit.prevent="saveTeacher">
+        <v-card flat :tile="$vuetify.breakpoint.smAndDown">
+          <v-card-title class="primary white--text">
+            {{ form._id ? 'Formulario editar profesor' :
+              'Formulario crear profesor' }}
+            <v-spacer />
+            <v-btn
+              class="white--text"
+              icon
+              @click="dialogEdit=false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text class="my-3">
+            <v-row dense>
+              <v-col class="primary--text" cols="12" md="12">
+                Información del profesor
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-text-field
+                  v-model="form.name"
+                  label="Nombre"
+                  filled
+                  dense
+                  required
+                  :rules="[generalRules]"
+                  hide-details="auto"
+                  maxlength="100"
+                />
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-text-field
+                  v-model="form.lastname"
+                  label="Apellido"
+                  filled
+                  dense
+                  required
+                  :rules="[generalRules]"
+                  hide-details="auto"
+                  maxlength="100"
+                />
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-text-field
+                  v-model="form.document"
+                  label="Cédula"
+                  filled
+                  dense
+                  required
+                  :rules="[generalRules]"
+                  hide-details="auto"
+                  maxlength="100"
+                />
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-text-field
+                  v-model="form.username"
+                  label="Usuario"
+                  filled
+                  dense
+                  required
+                  :rules="[generalRules]"
+                  hide-details="auto"
+                  maxlength="100"
+                />
+              </v-col>
+              <v-col cols="12" md="12">
+                <v-text-field
+                  v-model="form.email"
+                  label="Correo"
+                  filled
+                  dense
+                  required
+                  :rules="[generalRules]"
+                  hide-details="auto"
+                  maxlength="100"
+                />
+              </v-col>
+              <v-col cols="12" md="12">
+                <v-text-field
+                  v-model="form.password"
+                  label="Contraseña"
+                  filled
+                  dense
+                  required
+                  hide-details="auto"
+                  maxlength="100"
+                  type="password"
+                />
+              </v-col>
+              <v-col cols="12" md="12">
+                <v-file-input
+                  v-model="photo"
+                  filled
+                  dense
+                  prepend-inner-icon="mdi-paperclip"
+                  :prepend-icon="null"
+                  label="Foto"
+                  hide-details="auto"
+                />
+              </v-col>
+            </v-row>
+            <v-row v-if="form._id" dense>
+              <v-col class="text-caption" cols="12" md="6">
+                ID: {{ form.id }}
+              </v-col>
+              <v-col class="text-caption text-md-right" cols="12" md="6">
+                Modificado por: {{ form.updated_by }}
+                {{ $moment('10-10-2020') }}
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn color="primary" depressed type="submit">
+              Guardar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-form>
+    </v-dialog>
+  </v-container>
 </template>
 
 <script>
+import generalRules from '../../mixins/form-rules/general-rules'
+import { resetPasswordUrl, teacherUrl } from '../../mixins/routes'
+
 export default {
+  mixins: [generalRules],
+
   data () {
     return {
-      teachers: [{
-        fullname: 'Juan Diego Cobo Cabal',
-        username: 'juan_diego',
-        email: 'juandiego14012003@gmail.com',
-        status: 'ACTIVE'
-      }],
       options: {},
-      total: -1
+      total: -1,
+      items: [],
+      form: {
+        _id: '',
+        name: '',
+        lastname: '',
+        document: '',
+        username: '',
+        email: '',
+        password: ''
+      },
+      photo: null
     }
+  },
+
+  head () {
+    return { title: 'Teachers' }
   },
 
   computed: {
     headers () {
       return [
-        { text: 'Profesor', align: 'center', value: 'fullname' },
-        { text: 'Usuario', align: 'center', value: 'username' },
-        { text: 'Email', align: 'center', value: 'email' },
-        { text: 'Estado', align: 'center', value: 'status' },
-        { text: 'Opciones', align: 'center', value: 'options' }
+        { text: 'Profesor', value: 'fullname' },
+        { text: 'Usuario', value: 'username' },
+        { text: 'Email', value: 'email' },
+        { text: 'Estado', value: 'status' },
+        { text: 'Opciones', value: 'options' }
       ]
     }
   },
 
   watch: {
-    options: { handler () { this.getData() } }
+    options: { handler () { this.getData() } },
+    dialogEdit (value) {
+      if (!value) {
+        this.$refs.form.reset()
+        this.form._id = ''
+      } else {
+        this.$refs.form && this.$refs.form.resetValidation()
+      }
+    }
   },
 
   beforeMount () {
@@ -69,8 +219,48 @@ export default {
 
   methods: {
     async getData () {
-      // eslint-disable-next-line no-console
-      await console.log('GET DATA')
+      try {
+        const data = await this.$axios.$get(teacherUrl)
+        this.items = data.items
+      } catch (err) {
+        this.showSnackbar(err)
+      }
+    },
+    async saveTeacher () {
+      try {
+        if (!this.$refs.form.validate()) { return }
+        let message
+        if (this.form._id) {
+          ({ message } = await this.$axios.$patch(
+            `${teacherUrl}${this.form._id}`, this.form))
+        } else {
+          ({ message } = await this.$axios.$post(teacherUrl, this.form))
+        }
+
+        this.getData()
+        this.dialogEdit = false
+        this.showSnackbar(message)
+      } catch (err) {
+        this.showSnackbar(err)
+      }
+    },
+    async getTeacher (item) {
+      try {
+        const teacher = await this.$axios.$get(`${teacherUrl}/${item._id}`)
+        this.form = teacher
+        this.dialogEdit = true
+      } catch (err) {
+        this.showSnackbar(err)
+      }
+    },
+    async resendLink (item) {
+      try {
+        const { message } = await this.$axios.$post(resetPasswordUrl,
+          { email: item.email })
+        this.showSnackbar(message)
+      } catch (err) {
+        this.showSnackbar(err)
+      }
     }
   }
 }

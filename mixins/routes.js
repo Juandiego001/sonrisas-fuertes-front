@@ -6,7 +6,10 @@ export const photoUrl = '/api/account/photo'
 export const profileUrl = '/api/account/profile'
 
 // User
-export const userUrl = '/api/user'
+export const userUrl = '/api/user/'
 
 // Teacher
-export const teacherUrl = '/api/teacher'
+export const teacherUrl = '/api/teacher/'
+
+// Student
+export const studentUrl = '/api/student/'

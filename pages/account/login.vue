@@ -91,6 +91,8 @@ export default {
         this.showSnackbar(message)
         this.$router.push('/')
       } catch (err) {
+        // eslint-disable-next-line no-console
+        console.log('llega aqui')
         this.showSnackbar(err)
       }
     },

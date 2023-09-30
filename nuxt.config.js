@@ -26,7 +26,8 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     'plugins/axios',
-    'plugins/mixin-global'
+    'plugins/mixin-global',
+    'plugins/moment'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -37,7 +38,9 @@ export default {
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify'
+    '@nuxtjs/vuetify',
+    // https://github.com/nuxt-community/moment-module#readme
+    '@nuxtjs/moment'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -64,6 +67,11 @@ export default {
     manifest: {
       lang: 'en'
     }
+  },
+
+  // Moment.js
+  moment: {
+    timezone: true
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
