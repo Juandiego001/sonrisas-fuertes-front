@@ -5,8 +5,8 @@ const multipleOptions = [
     items: [
       {
         icon: 'mdi-shield-account-variant-outline',
-        title: 'Permisos',
-        to: '/administration/permissions'
+        title: 'Perfiles',
+        to: '/administration/profiles'
       },
       {
         icon: 'mdi-chart-timeline-variant',

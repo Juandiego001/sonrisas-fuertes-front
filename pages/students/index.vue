@@ -139,6 +139,15 @@
                 />
               </v-col>
             </v-row>
+            <v-row v-if="form._id" dense>
+              <v-col class="text-caption" cols="12" md="6">
+                ID: {{ form._id }}
+              </v-col>
+              <v-col class="text-caption text-md-right" cols="12" md="6">
+                Modificado por: {{ form.updated_by }}
+                {{ $moment(form.updated_at) }}
+              </v-col>
+            </v-row>
           </v-card-text>
           <v-card-actions>
             <v-spacer />
@@ -153,8 +162,8 @@
 </template>
 
 <script>
-import generalRules from '../../mixins/form-rules/general-rules'
-import { studentUrl } from '../../mixins/routes'
+import generalRules from '~/mixins/form-rules/general-rules'
+import { studentUrl } from '~/mixins/routes'
 
 export default {
   mixins: [generalRules],
@@ -237,7 +246,7 @@ export default {
     },
     async getStudent (item) {
       try {
-        this.form = (await this.$axios.$get(`${studentUrl}/${item._id}`))
+        this.form = (await this.$axios.$get(`${studentUrl}${item._id}`))
         this.dialogEdit = true
       } catch (err) {
         this.showSnackbar(err)

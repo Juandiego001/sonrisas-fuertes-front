@@ -141,11 +141,11 @@
             </v-row>
             <v-row v-if="form._id" dense>
               <v-col class="text-caption" cols="12" md="6">
-                ID: {{ form.id }}
+                ID: {{ form._id }}
               </v-col>
               <v-col class="text-caption text-md-right" cols="12" md="6">
                 Modificado por: {{ form.updated_by }}
-                {{ $moment('10-10-2020') }}
+                {{ $moment(form.updated_at) }}
               </v-col>
             </v-row>
           </v-card-text>
@@ -162,8 +162,8 @@
 </template>
 
 <script>
-import generalRules from '../../mixins/form-rules/general-rules'
-import { resetPasswordUrl, teacherUrl } from '../../mixins/routes'
+import generalRules from '~/mixins/form-rules/general-rules'
+import { resetPasswordUrl, teacherUrl } from '~/mixins/routes'
 
 export default {
   mixins: [generalRules],

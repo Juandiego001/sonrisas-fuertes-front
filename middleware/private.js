@@ -1,4 +1,4 @@
-export default async function ({ redirect, $axios, app, store }) {
+export default async function ({ redirect, $axios, $ability, app, store }) {
   try {
     const epoch = Math.floor(Date.now() / 1000)
     const oldEpoch = store.state.session.epoch
@@ -9,6 +9,7 @@ export default async function ({ redirect, $axios, app, store }) {
         redirect('/account/login/')
       }
       store.commit('session/updateSession', { epoch, ...user })
+      $ability.update(user.abilities)
     }
   } catch (err) {
     redirect('/account/login/')

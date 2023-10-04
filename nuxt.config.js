@@ -27,6 +27,7 @@ export default {
   plugins: [
     'plugins/axios',
     'plugins/mixin-global',
+    'plugins/casl',
     'plugins/moment'
   ],
 
