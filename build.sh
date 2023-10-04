@@ -1,4 +1,4 @@
 #./bash
 
-npm i
-npm run generate
+yarn
+yarn run build
