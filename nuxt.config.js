@@ -2,9 +2,9 @@ export default {
   server: {
     host: process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'
   },
-  target: 'server',
+  target: 'static',
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: process.env.NODE_ENV === 'production',
+  ssr: false,
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
