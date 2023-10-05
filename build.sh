@@ -1,4 +1,4 @@
 #./bash
 
-yarn
-yarn run build
+npm i
+npm run build
