@@ -3,7 +3,7 @@ export default {
     host: process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'
   },
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: false,
+  ssr: process.env.NODE_ENV === 'production',
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
