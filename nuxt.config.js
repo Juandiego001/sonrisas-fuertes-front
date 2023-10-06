@@ -67,10 +67,7 @@ export default {
 
   proxy: {
     '/api': {
-      target: process.env.API_SECRET || 'http://localhost:5000',
-      pathRewrite: {
-        '^/api': '/'
-      }
+      target: process.env.API_SECRET || 'http://localhost:5000'
     },
     changeOrigin: true
   },

@@ -161,7 +161,7 @@
 <script>
 import { mapMutations } from 'vuex'
 import menu from './menu'
-import { photoUrl, profileUrl, logoutUrl } from '~/mixins/routes'
+import { photoUrl, accountProfileUrl, logoutUrl } from '~/mixins/routes'
 
 export default {
   name: 'DefaultLayout',
@@ -188,7 +188,7 @@ export default {
   methods: {
     async showProfile () {
       try {
-        const data = await this.$axios.$get(profileUrl)
+        const data = await this.$axios.$get(accountProfileUrl)
         this.profile = data
         this.dialogProfile = true
       } catch (err) {

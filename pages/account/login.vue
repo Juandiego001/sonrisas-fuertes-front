@@ -60,7 +60,7 @@
 
 <script>
 import generalRules from '../../mixins/form-rules/general-rules'
-import { loginUrl, profileUrl } from '../../mixins/routes'
+import { loginUrl, accountProfileUrl } from '../../mixins/routes'
 
 export default {
   name: 'IndexPage',
@@ -86,8 +86,9 @@ export default {
           username: this.username,
           password: this.password
         })
-        const user = await this.$axios.$get(profileUrl)
+        const user = await this.$axios.$get(accountProfileUrl)
         this.$store.commit('session/updateSession', { epoch, ...user })
+        this.$ability.update(user.abilities)
         this.showSnackbar(message)
         this.$router.push('/')
       } catch (err) {
