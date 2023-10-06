@@ -21,8 +21,6 @@ export default {
         usuario: this.user,
         password: this.password
       }
-      // eslint-disable-next-line no-console
-      console.log(json)
     }
   }
 }

@@ -11,15 +11,9 @@ export default async function ({ redirect, $axios, $ability, app, store }) {
         redirect('/account/login/')
       }
       store.commit('session/updateSession', { epoch, ...user })
-      // eslint-disable-next-line no-console
-      console.log(user.abilities)
       $ability.update(user.abilities)
-      // eslint-disable-next-line no-console
-      console.log($ability)
     }
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err)
     redirect('/account/login/')
   }
 }

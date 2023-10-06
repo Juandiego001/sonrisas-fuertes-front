@@ -11,8 +11,6 @@ export default {
   },
 
   beforeMount () {
-    // eslint-disable-next-line no-console
-    console.log('puede', this.$ability.can('read', 'Materias'))
   }
 }
 </script>
