@@ -13,7 +13,7 @@
           color="success"
           depressed
           icon
-          @click="getTeacher(item)"
+          @click="getAdmin(item)"
         >
           <v-icon>
             mdi-pencil
@@ -36,11 +36,11 @@
       :fullscreen="$vuetify.breakpoint.smAndDown"
       scrollable
     >
-      <v-form ref="form" @submit.prevent="saveTeacher">
+      <v-form ref="form" @submit.prevent="saveAdmin">
         <v-card flat :tile="$vuetify.breakpoint.smAndDown">
           <v-card-title class="primary white--text">
-            {{ form._id ? 'Formulario editar profesor' :
-              'Formulario crear profesor' }}
+            {{ form._id ? 'Formulario editar administrador' :
+              'Formulario crear administrador' }}
             <v-spacer />
             <v-btn
               class="white--text"
@@ -53,78 +53,48 @@
           <v-card-text class="my-3">
             <v-row dense>
               <v-col class="primary--text" cols="12" md="12">
-                Información del profesor
+                Información del administrador
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
+                <text-field
                   v-model="form.name"
                   label="Nombre"
-                  filled
-                  dense
-                  required
-                  :rules="[generalRules]"
-                  hide-details="auto"
-                  maxlength="100"
+                  :rules="generalRules"
                 />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
+                <text-field
                   v-model="form.lastname"
                   label="Apellido"
-                  filled
-                  dense
-                  required
-                  :rules="[generalRules]"
-                  hide-details="auto"
-                  maxlength="100"
+                  :rules="generalRules"
                 />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
+                <text-field
                   v-model="form.document"
                   label="Cédula"
-                  filled
-                  dense
-                  required
-                  :rules="[generalRules]"
-                  hide-details="auto"
-                  maxlength="100"
+                  :rules="generalRules"
                 />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
+                <text-field
                   v-model="form.username"
                   label="Usuario"
-                  filled
-                  dense
-                  required
-                  :rules="[generalRules]"
-                  hide-details="auto"
-                  maxlength="100"
+                  :rules="generalRules"
                 />
               </v-col>
               <v-col cols="12" md="12">
-                <v-text-field
+                <text-field
                   v-model="form.email"
                   label="Correo"
-                  filled
-                  dense
-                  required
-                  :rules="[generalRules]"
-                  hide-details="auto"
-                  maxlength="100"
+                  :rules="generalRules"
                 />
               </v-col>
               <v-col cols="12" md="12">
-                <v-text-field
+                <text-field-password
                   v-model="form.password"
                   label="Contraseña"
-                  filled
-                  dense
-                  required
-                  hide-details="auto"
-                  maxlength="100"
-                  type="password"
+                  :rules="passwordEmptyRules"
                 />
               </v-col>
               <v-col cols="12" md="12">
@@ -140,6 +110,18 @@
               </v-col>
             </v-row>
             <v-row v-if="form._id" dense>
+              <v-col cols="12">
+                <v-select
+                  v-model="form.status"
+                  label="Estado"
+                  filled
+                  dense
+                  hide-details="auto"
+                  :items="userStatus"
+                  item-value="value"
+                  item-text="text"
+                />
+              </v-col>
               <v-col class="text-caption" cols="12" md="6">
                 ID: {{ form._id }}
               </v-col>
@@ -163,10 +145,11 @@
 
 <script>
 import generalRules from '~/mixins/form-rules/general-rules'
-import { resetPasswordUrl, teacherUrl } from '~/mixins/routes'
+import passwordEmptyRules from '~/mixins/form-rules/passwordsEmpty'
+import { resetPasswordUrl, adminUrl } from '~/mixins/routes'
 
 export default {
-  mixins: [generalRules],
+  mixins: [generalRules, passwordEmptyRules],
 
   data () {
     return {
@@ -180,24 +163,42 @@ export default {
         document: '',
         username: '',
         email: '',
-        password: ''
+        password: '',
+        status: ''
       },
       photo: null
     }
   },
 
   head () {
-    return { title: 'Teachers' }
+    return { title: 'Admins' }
   },
 
   computed: {
     headers () {
       return [
-        { text: 'Profesor', value: 'fullname' },
+        { text: 'Administrador', value: 'fullname' },
         { text: 'Usuario', value: 'username' },
         { text: 'Email', value: 'email' },
         { text: 'Estado', value: 'status' },
         { text: 'Opciones', value: 'options' }
+      ]
+    },
+    userStatus () {
+      return [
+        {
+          text: 'Activo',
+          value: 'ACTIVE'
+        },
+        {
+          text: 'Pendiente de activación',
+          value: 'PENDING',
+          disabled: true
+        },
+        {
+          text: 'Inactivo',
+          value: 'INACTIVE'
+        }
       ]
     }
   },
@@ -220,21 +221,21 @@ export default {
   methods: {
     async getData () {
       try {
-        const data = await this.$axios.$get(teacherUrl)
+        const data = await this.$axios.$get(adminUrl)
         this.items = data.items
       } catch (err) {
         this.showSnackbar(err)
       }
     },
-    async saveTeacher () {
+    async saveAdmin () {
       try {
         if (!this.$refs.form.validate()) { return }
         let message
         if (this.form._id) {
           ({ message } = await this.$axios.$patch(
-            `${teacherUrl}${this.form._id}`, this.form))
+              `${adminUrl}${this.form._id}`, this.form))
         } else {
-          ({ message } = await this.$axios.$post(teacherUrl, this.form))
+          ({ message } = await this.$axios.$post(adminUrl, this.form))
         }
 
         this.getData()
@@ -244,10 +245,10 @@ export default {
         this.showSnackbar(err)
       }
     },
-    async getTeacher (item) {
+    async getAdmin (item) {
       try {
-        const teacher = await this.$axios.$get(`${teacherUrl}${item._id}`)
-        this.form = teacher
+        const admin = await this.$axios.$get(`${adminUrl}${item._id}`)
+        this.form = admin
         this.dialogEdit = true
       } catch (err) {
         this.showSnackbar(err)

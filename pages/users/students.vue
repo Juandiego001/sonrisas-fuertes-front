@@ -56,75 +56,45 @@
                 Información del estudiante
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
+                <text-field
                   v-model="form.name"
                   label="Nombre"
-                  filled
-                  dense
-                  required
-                  :rules="[generalRules]"
-                  hide-details="auto"
-                  maxlength="100"
+                  :rules="generalRules"
                 />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
+                <text-field
                   v-model="form.lastname"
                   label="Apellido"
-                  filled
-                  dense
-                  required
-                  :rules="[generalRules]"
-                  hide-details="auto"
-                  maxlength="100"
+                  :rules="generalRules"
                 />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
+                <text-field
                   v-model="form.document"
                   label="Cédula"
-                  filled
-                  dense
-                  required
-                  :rules="[generalRules]"
-                  hide-details="auto"
-                  maxlength="100"
+                  :rules="generalRules"
                 />
               </v-col>
               <v-col cols="12" md="6">
-                <v-text-field
+                <text-field
                   v-model="form.username"
                   label="Usuario"
-                  filled
-                  dense
-                  required
-                  :rules="[generalRules]"
-                  hide-details="auto"
-                  maxlength="100"
+                  :rules="generalRules"
                 />
               </v-col>
               <v-col cols="12" md="12">
-                <v-text-field
+                <text-field
                   v-model="form.email"
                   label="Correo"
-                  filled
-                  dense
-                  required
-                  :rules="[generalRules]"
-                  hide-details="auto"
-                  maxlength="100"
+                  :rules="generalRules"
                 />
               </v-col>
               <v-col cols="12" md="12">
-                <v-text-field
+                <text-field-password
                   v-model="form.password"
                   label="Contraseña"
-                  filled
-                  dense
-                  required
-                  hide-details="auto"
-                  maxlength="100"
-                  type="password"
+                  :rules="passwordEmptyRules"
                 />
               </v-col>
               <v-col cols="12" md="12">
@@ -140,6 +110,18 @@
               </v-col>
             </v-row>
             <v-row v-if="form._id" dense>
+              <v-col cols="12">
+                <v-select
+                  v-model="form.status"
+                  label="Estado"
+                  filled
+                  dense
+                  hide-details="auto"
+                  :items="userStatus"
+                  item-value="value"
+                  item-text="text"
+                />
+              </v-col>
               <v-col class="text-caption" cols="12" md="6">
                 ID: {{ form._id }}
               </v-col>
@@ -162,11 +144,12 @@
 </template>
 
 <script>
+import passwordsEmptyRules from '../../mixins/form-rules/passwordsEmpty'
 import generalRules from '~/mixins/form-rules/general-rules'
 import { studentUrl } from '~/mixins/routes'
 
 export default {
-  mixins: [generalRules],
+  mixins: [generalRules, passwordsEmptyRules],
 
   data () {
     return {
@@ -198,6 +181,23 @@ export default {
         { text: 'Email', value: 'email' },
         { text: 'Estado', value: 'status' },
         { text: 'Opciones', value: 'options' }
+      ]
+    },
+    userStatus () {
+      return [
+        {
+          text: 'Activo',
+          value: 'ACTIVE'
+        },
+        {
+          text: 'Pendiente de activación',
+          value: 'PENDING',
+          disabled: true
+        },
+        {
+          text: 'Inactivo',
+          value: 'INACTIVE'
+        }
       ]
     }
   },

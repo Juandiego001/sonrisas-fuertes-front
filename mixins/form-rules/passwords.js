@@ -4,7 +4,7 @@ export default {
       const rules = [
         v => /[A-Z]/.test(v) || 'Se requieren mayúsculas',
         v => /[a-z]/.test(v) || 'Se requireren minúsculas',
-        v => /[^a-zA-Z\d]/.test(v) || 'Contraseña débil',
+        v => /[^a-zA-Z\d]/.test(v) || 'Se requieren caracteres especiales',
         v => /\d/.test(v) || 'Agregar un número',
         v => (v && v.length >= 8) || 'Contraseña débil',
         v => (v && v.length <= 24) ||

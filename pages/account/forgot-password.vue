@@ -24,13 +24,9 @@
           >
             <v-row justify="center" align="center">
               <v-col cols="12" md="8" sm="8">
-                <v-text-field
+                <text-field
                   v-model="email"
-                  filled
-                  dense
                   label="Correo"
-                  type="email"
-                  hide-details="auto"
                   :rules="[generalRules]"
                 />
               </v-col>

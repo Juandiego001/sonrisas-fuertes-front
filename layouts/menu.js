@@ -1,8 +1,18 @@
-const multipleOptions = [
+export default [
   {
     icon: 'mdi-view-dashboard',
     title: 'Administración',
     items: [
+      {
+        icon: 'mdi-view-dashboard-outline',
+        title: 'Grupos',
+        to: '/administration/groups'
+      },
+      {
+        icon: 'mdi-wallet-membership',
+        title: 'Clases',
+        to: '/administration/subjects'
+      },
       {
         icon: 'mdi-shield-account-variant-outline',
         title: 'Perfiles',
@@ -15,33 +25,30 @@ const multipleOptions = [
       },
       {
         icon: 'mdi-chart-box-outline',
-        title: 'Informes',
+        title: 'Reportes',
         to: '/administration/reports'
       }
     ]
   },
   {
-    icon: 'mdi-view-dashboard-outline',
-    title: 'Grupos'
+    icon: 'mdi-account',
+    title: 'Usuarios',
+    items: [
+      {
+        icon: 'mdi-shield-crown-outline',
+        title: 'Administradores',
+        to: '/users/admins'
+      },
+      {
+        icon: 'mdi-account-circle-outline',
+        title: 'Profesores',
+        to: '/users/teachers'
+      },
+      {
+        icon: 'mdi-school',
+        title: 'Estudiantes',
+        to: '/users/students'
+      }
+    ]
   }
 ]
-
-const singleOptions = [
-  {
-    icon: 'mdi-account-circle-outline',
-    title: 'Profesores',
-    to: '/teachers'
-  },
-  {
-    icon: 'mdi-school',
-    title: 'Estudiantes',
-    to: '/students'
-  },
-  {
-    icon: 'mdi-wallet-membership',
-    title: 'Clases',
-    to: '/subjects'
-  }
-]
-
-export default { multipleOptions, singleOptions }

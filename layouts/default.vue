@@ -54,7 +54,7 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-group
-          v-for="(item, i) in multipleOptions"
+          v-for="(item, i) in appMenu"
           :key="item.text + '' + i"
           active-class="accent--text"
         >
@@ -84,21 +84,6 @@
             </v-list-item-title>
           </v-list-item>
         </v-list-group>
-        <v-list-item
-          v-for="(item, i) in singleOptions"
-          :key="item.title + '' + i"
-          link
-          :to="item.to"
-        >
-          <v-list-item-icon>
-            <v-icon class="white--text">
-              {{ item.icon }}
-            </v-icon>
-          </v-list-item-icon>
-          <v-list-item-title class="white--text">
-            {{ item.title }}
-          </v-list-item-title>
-        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-app-bar
@@ -170,13 +155,12 @@ export default {
     return {
       dialogProfile: false,
       profile: {},
-      drawer: false
+      drawer: false,
+      appMenu: []
     }
   },
 
   computed: {
-    multipleOptions: { get () { return menu.multipleOptions } },
-    singleOptions: { get () { return menu.singleOptions } },
     session () { return { ...this.$store.state.session } },
     snackbar: {
       get () { return this.$store.state.snackbar.snackbar },
@@ -185,7 +169,28 @@ export default {
     photoUrl () { return `${photoUrl}/${this.session.photoUrl}` }
   },
 
+  beforeMount () {
+    this.getMenu()
+  },
+
   methods: {
+    async getMenu () {
+      try {
+        // eslint-disable-next-line no-console
+        await console.log('')
+        // await this.$axios.$get('/')
+        const options = []
+        for (const option of this.$clone(menu)) {
+          option.e = this.session.epoch
+          option.items = option.items.filter(subitem =>
+            this.$ability.can('read', subitem.title))
+          if (option.items.length) { options.push(option) }
+        }
+        this.appMenu = options
+      } catch (err) {
+        this.showSnackbar(err)
+      }
+    },
     async showProfile () {
       try {
         const data = await this.$axios.$get(accountProfileUrl)

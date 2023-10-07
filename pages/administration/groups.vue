@@ -1,6 +1,6 @@
 <template>
   <div>
-    Grupos
+    Grupos Rs
   </div>
 </template>
 

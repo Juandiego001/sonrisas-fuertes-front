@@ -9,6 +9,9 @@ export const changePasswordUrl = '/api/account/change-password'
 // User
 export const userUrl = '/api/user'
 
+// Admin
+export const adminUrl = '/api/admin/'
+
 // Teacher
 export const teacherUrl = '/api/teacher/'
 

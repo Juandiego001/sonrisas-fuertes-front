@@ -17,10 +17,6 @@ export default {
 
   methods: {
     login () {
-      const json = {
-        usuario: this.user,
-        password: this.password
-      }
     }
   }
 }

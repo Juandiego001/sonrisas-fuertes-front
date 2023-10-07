@@ -92,30 +92,25 @@
               <v-form ref="form" @submit.prevent="changePassword">
                 <v-row dense>
                   <v-col cols="12">
-                    <v-text-field
+                    <text-field-password
                       v-model="form.current_password"
                       label="Contraseña actual"
-                      filled
-                      hide-details
-                      type="password"
+                      :rules="passwordRules"
+                      autocomplete="current_password"
                     />
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-text-field
+                    <text-field-password
                       v-model="form.new_password"
                       label="Nueva contraseña"
-                      filled
-                      hide-details="auto"
-                      type="password"
                       :rules="passwordRules"
+                      autocomplete="new_password"
                     />
                   </v-col>
                   <v-col cols="12" md="6">
-                    <v-text-field
+                    <text-field-password
                       v-model="confirmPassword"
                       label="Confirmar contraseña"
-                      filled
-                      type="password"
                       :rules="passwordRules"
                     />
                   </v-col>

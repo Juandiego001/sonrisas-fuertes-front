@@ -20,31 +20,26 @@
           <v-form ref="form" class="text-center" @submit.prevent="login">
             <v-row justify="center" align="center">
               <v-col class="pb-0" cols="12" md="8" sm="8">
-                <v-text-field
-                  v-model="username"
+                <text-field
+                  v-model="form.username"
                   label="Usuario"
-                  autocomplete="current-password"
-                  filled
-                  dense
-                  hide-details="auto"
-                  :rules="[generalRules]"
+                  :rules="generalRules"
                 />
               </v-col>
               <v-col cols="12" md="8" sm="8">
-                <v-text-field
-                  v-model="password"
+                <text-field-password
+                  v-model="form.password"
                   label="Contraseña"
-                  autocomplete="current-password"
-                  filled
-                  dense
-                  type="password"
-                  hide-details="auto"
-                  :rules="[generalRules]"
+                  :rules="generalRules"
                 />
               </v-col>
             </v-row>
             <v-container class="text-end mb-3">
-              <v-btn class="primary--text" elevation="0" @click="forgotPassword">
+              <v-btn
+                class="primary--text"
+                elevation="0"
+                @click="forgotPassword"
+              >
                 ¿Olvidó su contraseña?
               </v-btn>
             </v-container>
@@ -60,16 +55,19 @@
 
 <script>
 import generalRules from '../../mixins/form-rules/general-rules'
+import passwordRules from '../../mixins/form-rules/passwords'
 import { loginUrl, accountProfileUrl } from '../../mixins/routes'
 
 export default {
   name: 'IndexPage',
-  mixins: [generalRules],
+  mixins: [generalRules, passwordRules],
   layout: 'auth',
   data () {
     return {
-      username: '',
-      password: ''
+      form: {
+        username: '',
+        password: ''
+      }
     }
   },
 
@@ -82,10 +80,7 @@ export default {
       try {
         if (!this.$refs.form.validate()) { return }
         const epoch = Math.floor(Date.now() / 1000)
-        const { message } = await this.$axios.$post(loginUrl, {
-          username: this.username,
-          password: this.password
-        })
+        const { message } = await this.$axios.$post(loginUrl, this.form)
         const user = await this.$axios.$get(accountProfileUrl)
         this.$store.commit('session/updateSession', { epoch, ...user })
         this.$ability.update(user.abilities)
