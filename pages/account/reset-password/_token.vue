@@ -17,16 +17,16 @@
           <p class="headline text-center">
             Reestablecer contraseña
           </p>
-          <v-form ref="form" class="text-center" @submit.prevent="resetPassword">
+          <v-form
+            ref="form"
+            class="text-center"
+            @submit.prevent="resetPassword"
+          >
             <v-row justify="center" align="center">
               <v-col class="pb-0" cols="12" md="8" sm="8">
-                <v-text-field
-                  v-model="new_password"
+                <text-field-password
+                  v-model="form.new_password"
                   label="Contraseña"
-                  filled
-                  dense
-                  type="password"
-                  hide-details="auto"
                   :rules="passwordRules"
                 />
               </v-col>
@@ -34,10 +34,6 @@
                 <v-text-field
                   v-model="confirm_password"
                   label="Confirmar contraseña"
-                  filled
-                  dense
-                  hide-details="auto"
-                  type="password"
                   :rules="passwordRules"
                 />
               </v-col>
@@ -64,7 +60,9 @@ export default {
 
   data () {
     return {
-      new_password: '',
+      form: {
+        new_password: ''
+      },
       confirm_password: ''
     }
   },
