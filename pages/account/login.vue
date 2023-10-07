@@ -81,12 +81,18 @@ export default {
         if (!this.$refs.form.validate()) { return }
         const epoch = Math.floor(Date.now() / 1000)
         const { message } = await this.$axios.$post(loginUrl, this.form)
+        // eslint-disable-next-line no-console
+        console.log('PASO POR AQUI')
         const user = await this.$axios.$get(accountProfileUrl)
+        // eslint-disable-next-line no-console
+        console.log('PASO POR USER')
         this.$store.commit('session/updateSession', { epoch, ...user })
         this.$ability.update(user.abilities)
         this.showSnackbar(message)
         this.$router.push('/')
       } catch (err) {
+        // eslint-disable-next-line no-console
+        console.log({ err })
         this.showSnackbar(err)
       }
     },
