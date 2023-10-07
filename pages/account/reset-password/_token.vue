@@ -31,7 +31,7 @@
                 />
               </v-col>
               <v-col cols="12" md="8" sm="8">
-                <v-text-field
+                <text-field-password
                   v-model="confirm_password"
                   label="Confirmar contraseña"
                   :rules="passwordRules"
@@ -77,9 +77,9 @@ export default {
         this.$refs.form.validate()
         if (!this.$refs.form.validate()) { return }
         const { message } = await this.$axios.$patch(
-          `${resetPasswordUrl}/${this.$route.params.token}`,
-          { password: this.new_password })
+          `${resetPasswordUrl}/${this.$route.params.token}`, this.form)
         this.showSnackbar(message)
+        this.$router.push('/account/login')
       } catch (err) {
         this.showSnackbar(err)
       }
