@@ -15,7 +15,7 @@ export const mutations = {
       state.text = value
     } else {
       state.text = value.response ? value.response.data.message : 'Error'
-      if (value.response && value.response.status !== 200) {
+      if (!value.response) {
         state.type = 'error'
       }
     }
