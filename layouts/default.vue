@@ -25,7 +25,7 @@
         </v-col>
         <v-col class="white--text text-center pb-0" cols="12" md="12">
           <p class="mb-0">
-            Juan Diego Cobo Cabal
+            {{ session.name }} {{ session.lastname }}
           </p>
         </v-col>
         <v-col class="text-center pb-0" cols="6">

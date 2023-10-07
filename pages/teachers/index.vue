@@ -246,7 +246,7 @@ export default {
     },
     async getTeacher (item) {
       try {
-        const teacher = await this.$axios.$get(`${teacherUrl}/${item._id}`)
+        const teacher = await this.$axios.$get(`${teacherUrl}${item._id}`)
         this.form = teacher
         this.dialogEdit = true
       } catch (err) {

@@ -7,10 +7,12 @@ export default {
         v => /[^a-zA-Z\d]/.test(v) || 'Contraseña débil',
         v => /\d/.test(v) || 'Agregar un número',
         v => (v && v.length >= 8) || 'Contraseña débil',
-        v => (v && v.length <= 24) || 'Su contraseña ha excedido el límite de caracteres'
+        v => (v && v.length <= 24) ||
+          'Su contraseña ha excedido el límite de caracteres'
       ]
-      if (this.new_password) {
-        const rule = v => v === this.new_password || 'Las contraseñas no coinciden'
+      if (this.form.new_password) {
+        const rule = v => v === this.form.new_password ||
+          'Las contraseñas no coinciden'
         rules.push(rule)
       }
       return rules
