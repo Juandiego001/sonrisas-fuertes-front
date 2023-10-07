@@ -95,7 +95,7 @@
                     <text-field-password
                       v-model="form.current_password"
                       label="Contraseña actual"
-                      :rules="passwordRules"
+                      :rules="generalRules"
                       autocomplete="current_password"
                     />
                   </v-col>
@@ -136,11 +136,12 @@
 
 <script>
 import { changePasswordUrl } from '~/mixins/routes'
+import generalRules from '~/mixins/form-rules/general-rules'
 import passwordRules from '~/mixins/form-rules/passwords'
 
 export default {
   name: 'ProfilePage',
-  mixins: [passwordRules],
+  mixins: [generalRules, passwordRules],
 
   model: {
     prop: 'dialog',

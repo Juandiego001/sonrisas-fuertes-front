@@ -67,9 +67,6 @@ export default {
     }
   },
 
-  async fetch () {
-  },
-
   head () {
     return { title: 'Reestablecer contraseña' }
   },
