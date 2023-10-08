@@ -23,3 +23,6 @@ export const permissionUrl = '/api/permission'
 
 // Profiles
 export const profileUrl = '/api/profile/'
+
+// Groups
+export const groupUrl = '/api/group/'
