@@ -1,56 +1,24 @@
-<template>
-  <v-row class="fill-height my-0 mx-0 white">
-    <v-col cols="12" md="6" class="px-0 py-0">
-      <v-img
-        cover
-        class="fill-height"
-        src="/banner.jpg"
-        alt="Logo de fundación"
-      />
-    </v-col>
-    <v-col>
-      <v-row class="fill-height" align="center">
-        <v-col cols="12" md="12">
-          <h1 class="primary--text text-center mb-3">
-            Sonrisas Fuertes
-          </h1>
-          <p class="headline text-center">
-            Iniciar sesión
-          </p>
-          <v-form ref="form" class="text-center" @submit.prevent="login">
-            <v-row justify="center" align="center">
-              <v-col class="pb-0" cols="12" md="8" sm="8">
-                <text-field
-                  v-model="form.username"
-                  label="Usuario"
-                  :rules="generalRules"
-                />
-              </v-col>
-              <v-col cols="12" md="8" sm="8">
-                <text-field-password
-                  v-model="form.password"
-                  label="Contraseña"
-                  :rules="generalRules"
-                />
-              </v-col>
-            </v-row>
-            <v-container class="text-end mb-3">
-              <v-btn
-                class="primary--text"
-                elevation="0"
-                @click="forgotPassword"
-              >
-                ¿Olvidó su contraseña?
-              </v-btn>
-            </v-container>
-            <v-btn class="primary" type="submit">
-              Iniciar sesión
-            </v-btn>
-          </v-form>
-        </v-col>
-      </v-row>
-    </v-col>
-  </v-row>
+<template lang="pug">
+v-row.fill-height.my-0.mx-0.white
+  v-col(cols="12" md="6" class="px-0 py-0")
+    v-img.fill-height(cover src="/banner.jpg" alt="Logo de fundación")
+  v-col
+    v-row.fill-height(align="center")
+      v-col(cols="12" md="12")
+        h1.primary--text.text-center.mb-3 Sonrisas Fuertes
+        p.headline.text-center Iniciar sesión
+        v-form.text-center(ref="form" @submit.prevent="login")
+          v-row(justify="center" align="center")
+            v-col.pb-0(cols="12" md="8" sm="8")
+              text-field(v-model="form.username" label="Usuario"
+              :rules="generalRules")
+            v-col(cols="12" md="8" sm="8")
+              text-field-password(v-model="form.password" label="Contraseña"
+              :rules="generalRules")
+          v-container.text-end.mb-3
+            v-btn(class="primary--text" elevation="0" @click="forgotPassword")
+              | ¿Olvidó su contraseña?
+          v-btn.primary(type="submit") Iniciar sesión
 </template>
 
 <script>

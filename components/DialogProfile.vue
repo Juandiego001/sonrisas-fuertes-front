@@ -1,137 +1,56 @@
-<template>
-  <v-dialog
-    :value="dialog"
-    max-width="600px"
-    scrollable
-    :fullscreen="$vuetify.breakpoint.smAndDown"
-    @input="ev => $emit('input', ev)"
-  >
-    <v-card flat :tile="$vuetify.breakpoint.smAndDown" scrollable>
-      <v-card-title class="primary white--text">
-        Mi perfil
-        <v-spacer />
-        <v-btn
-          fab
-          small
-          depressed
-          color="primary"
-          @click="$emit('input', false)"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-card-title>
-      <v-card-text class="py-3">
-        <v-expansion-panels v-model="panel" flat>
-          <v-expansion-panel>
-            <v-expansion-panel-header class="primary--text px-0">
-              Perfil
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-form>
-                <v-row dense>
-                  <v-col cols="12" md="6">
-                    <v-text-field
-                      :value="profile.name"
-                      label="Nombre"
-                      filled
-                      readonly
-                      hide-details
-                      dense
-                    />
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field
-                      :value="profile.lastname"
-                      label="Apellido"
-                      filled
-                      readonly
-                      hide-details
-                      dense
-                    />
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field
-                      :value="profile.username"
-                      label="Usuario"
-                      filled
-                      readonly
-                      hide-details
-                      dense
-                    />
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <v-text-field
-                      :value="profile.document"
-                      label="Documento"
-                      filled
-                      readonly
-                      hide-details
-                      dense
-                    />
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
-                      :value="profile.email"
-                      label="Correo"
-                      filled
-                      readonly
-                      hide-details
-                      dense
-                    />
-                  </v-col>
-                </v-row>
-              </v-form>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
+<template lang="pug">
+v-dialog(:value="dialog" max-width="600px" scrollable
+:fullscreen="$vuetify.breakpoint.smAndDown" @input="ev => $emit('input', ev)")
+  v-card(flat :tile="$vuetify.breakpoint.smAndDown" scrollable)
+    v-card-title.primary.white--text Mi perfil
+      v-spacer
+      v-btn(fab small depressed color="primary"
+      @click="$emit('input', false)")
+        v-icon mdi-close
+    v-card-text.py-3
+      v-expansion-panels(v-model="panel" flat)
+        v-expansion-panel
+          v-expansion-panel-header.primary--text.px-0 Perfil
+          v-expansion-panel-content
+            v-form
+              v-row(dense)
+                v-col(cols="12" md="6")
+                  v-text-field(:value="profile.name" label="Nombre" filled
+                  readonly hide-details dense)
+                v-col(cols="12" md="6")
+                  v-text-field(:value="profile.lastname" label="Apellido"
+                  filled readonly hide-details dense)
+                v-col(cols="12" md="6")
+                  v-text-field(:value="profile.username" label="Usuario"
+                  filled readonly hide-details dense)
+                v-col(cols="12" md="6")
+                  v-text-field(:value="profile.document" label="Documento"
+                  filled readonly hide-details dense)
+                v-col(cols="12")
+                  v-text-field(:value="profile.email" label="Correo" filled
+                  readonly hide-details dense)
 
-          <v-expansion-panel>
-            <v-expansion-panel-header class="primary--text px-0">
-              Cambiar contraseña
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-form ref="form" @submit.prevent="changePassword">
-                <v-row dense>
-                  <v-col cols="12">
-                    <text-field-password
-                      v-model="form.current_password"
-                      label="Contraseña actual"
-                      :rules="generalRules"
-                      autocomplete="current_password"
-                    />
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <text-field-password
-                      v-model="form.new_password"
-                      label="Nueva contraseña"
-                      :rules="passwordRules"
-                      autocomplete="new_password"
-                    />
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <text-field-password
-                      v-model="confirmPassword"
-                      label="Confirmar contraseña"
-                      :rules="passwordRules"
-                    />
-                  </v-col>
-                  <v-col cols="12">
-                    <v-card flat>
-                      <v-card-actions>
-                        <v-spacer />
-                        <v-btn color="primary" depressed type="submit">
-                          Guardar
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-col>
-                </v-row>
-              </v-form>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </v-card-text>
-    </v-card>
-  </v-dialog>
+        v-expansion-panel
+          v-expansion-panel-header.primary--text.px-0 Cambiar contraseña
+          v-expansion-panel-content
+            v-form(ref="form" @submit.prevent="changePassword")
+              v-row(dense)
+                v-col(cols="12")
+                  text-field-password(v-model="form.current_password"
+                  label="Contraseña actual" :rules="generalRules"
+                  autocomplete="current_password")
+                v-col(cols="12" md="6")
+                  text-field-password(v-model="form.new_password"
+                  label="Nueva contraseña" :rules="passwordRules"
+                  autocomplete="new_password")
+                v-col(cols="12" md="6")
+                  text-field-password(v-model="confirmPassword"
+                  label="Confirmar contraseña" :rules="passwordRules")
+                v-col(cols="12")
+                  v-card(flat)
+                    v-card-actions
+                      v-spacer
+                      v-btn(color="primary" depressed type="submit") Guardar
 </template>
 
 <script>

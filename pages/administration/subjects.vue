@@ -1,7 +1,5 @@
-<template>
-  <div>
-    Cursos
-  </div>
+<template lang="pug">
+div Cursos
 </template>
 
 <script>

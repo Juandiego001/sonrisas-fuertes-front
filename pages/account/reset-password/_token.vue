@@ -1,53 +1,22 @@
-<template>
-  <v-row class="fill-height my-0 mx-0 white">
-    <v-col cols="12" md="6" class="px-0 py-0">
-      <v-img
-        cover
-        class="fill-height"
-        src="/banner.jpg"
-        alt="Logo de fundación"
-      />
-    </v-col>
-    <v-col cols="12" md="6" class="text-center">
-      <v-row class="fill-height" align="center">
-        <v-col cols="12" md="12">
-          <h1 class="primary--text text-center mb-3">
-            Sonrisas Fuertes
-          </h1>
-          <p class="headline text-center">
-            Reestablecer contraseña
-          </p>
-          <v-form
-            ref="form"
-            class="text-center"
-            @submit.prevent="resetPassword"
-          >
-            <v-row justify="center" align="center">
-              <v-col class="pb-0" cols="12" md="8" sm="8">
-                <text-field-password
-                  v-model="form.new_password"
-                  label="Contraseña"
-                  :rules="passwordRules"
-                />
-              </v-col>
-              <v-col cols="12" md="8" sm="8">
-                <text-field-password
-                  v-model="confirm_password"
-                  label="Confirmar contraseña"
-                  :rules="passwordRules"
-                />
-              </v-col>
-              <v-col cols="12" md="12">
-                <v-btn color="primary" type="submit" depressed>
-                  Guardar
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-form>
-        </v-col>
-      </v-row>
-    </v-col>
-  </v-row>
+<template lang="pug">
+v-row.fill-height.my-0.mx-0.white
+  v-col.px-0.py-0(cols="12" md="6")
+    v-img.fill-height(cover src="/banner.jpg" alt="Logo de fundación")
+  v-col.text-center(cols="12" md="6")
+    v-row.fill-height(align="center")
+      v-col(cols="12" md="12")
+        h1.primary--text.text-center.mb-3 Sonrisas Fuertes
+        p.headline.text-center Reestablecer contraseña
+        v-form.text-center(ref="form" @submit.prevent="resetPassword")
+          v-row(justify="center" align="center")
+            v-col.pb-0(cols="12" md="8" sm="8")
+              text-field-password(v-model="form.new_password"
+              label="Contraseña" :rules="passwordRules")
+            v-col(cols="12" md="8" sm="8")
+              text-field-password(v-model="confirm_password"
+              label="Confirmar contraseña" :rules="passwordRules")
+            v-col(cols="12" md="12")
+              v-btn(color="primary" type="submit" depressed) Guardar
 </template>
 <script>
 import { resetPasswordUrl } from '~/mixins/routes'

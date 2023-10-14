@@ -1,16 +1,7 @@
-<template>
-  <v-text-field
-    :value="data"
-    :label="label"
-    filled
-    dense
-    type="text"
-    hide-details="auto"
-    :placeholder="placeholder"
-    :readonly="readonly"
-    :rules="rules"
-    @input="ev => $emit('input', ev)"
-  />
+<template lang="pug">
+v-text-field(:value="data" :label="label" filled dense type="text"
+hide-details="auto" :placeholder="placeholder" :readonly="readonly"
+:rules="rules" @input="ev => $emit('input', ev)")
 </template>
 
 <script>

@@ -1,51 +1,21 @@
-<template>
-  <v-row class="fill-height my-0 mx-0 white">
-    <v-col cols="12" md="6" class="px-0 py-0">
-      <v-img
-        cover
-        class="fill-height"
-        src="/banner.jpg"
-        alt="Logo de fundación"
-      />
-    </v-col>
-    <v-col cols="12" md="6">
-      <v-row class="fill-height" align="center">
-        <v-col>
-          <h1 class="primary--text text-center mb-3">
-            Sonrisas Fuertes
-          </h1>
-          <p class="headline text-center">
-            Recuperación de contraseña
-          </p>
-          <v-form
-            ref="form"
-            class="text-center"
-            @submit.prevent="recoverPassword"
-          >
-            <v-row justify="center" align="center">
-              <v-col cols="12" md="8" sm="8">
-                <text-field
-                  v-model="email"
-                  label="Correo"
-                  :rules="[generalRules]"
-                />
-              </v-col>
-            </v-row>
-            <v-row justify="center" align="center">
-              <v-col class="text-center" cols="12">
-                <v-btn class="white primary--text" @click="login">
-                  Regresar
-                </v-btn>
-                <v-btn class="primary" type="submit">
-                  Recuperar contraseña
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-form>
-        </v-col>
-      </v-row>
-    </v-col>
-  </v-row>
+<template lang="pug">
+v-row.fill-height.my-0.mx-0.white
+  v-col.px-0.py-0(cols="12" md="6")
+    v-img.fill-height(cover src="/banner.jpg" alt="Logo de fundación")
+  v-col(cols="12" md="6")
+    v-row.fill-height(align="center")
+      v-col
+        h1.primary--text.text-center.mb-3 Sonrisas Fuertes
+        p.headline.text-center Recuperación de contraseña
+        v-form.text-center(ref="form" @submit.prevent="recoverPassword")
+          v-row(justify="center" align="center")
+            v-col(cols="12" md="8" sm="8")
+              text-field(v-model="email" label="Correo"
+              :rules="[generalRules]")
+          v-row(justify="center" align="center")
+            v-col.text-center(cols="12")
+              v-btn.white.primary--text(@click="login") Regresar
+              v-btn.primary(type="submit") Recuperar contraseña
 </template>
 
 <script>

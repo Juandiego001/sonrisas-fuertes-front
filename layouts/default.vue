@@ -1,146 +1,61 @@
-<template>
-  <v-app>
-    <v-navigation-drawer
-      v-model="drawer"
-      fixed
-      app
-      dark
-      class="primary"
-    >
-      <v-row class="py-4">
-        <v-col class="text-center pb-0" cols="12" md="12">
-          <v-avatar>
-            <template v-if="session.photo">
-              <v-img
-                :src="photoUrl"
-                alt="Avatar"
-              />
-            </template>
-            <template v-else>
-              <v-icon large>
-                mdi-account-circle-outline
-              </v-icon>
-            </template>
-          </v-avatar>
-        </v-col>
-        <v-col class="white--text text-center pb-0" cols="12" md="12">
-          <p class="mb-0">
-            {{ session.name }} {{ session.lastname }}
-          </p>
-        </v-col>
-        <v-col class="text-center pb-0" cols="6">
-          <v-btn class="primary white--text" @click="showProfile">
-            Perfil
-          </v-btn>
-        </v-col>
-        <v-col class="text-center" cols="6">
-          <v-btn class="error white--text" @click="logout">
-            <v-icon class="white--text">
-              mdi-logout
-            </v-icon>
-            Salir
-          </v-btn>
-        </v-col>
-      </v-row>
-      <v-list>
-        <v-list-item link to="/">
-          <v-list-item-icon>
-            <v-icon>mdi-home</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>
-              Inicio
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-group
-          v-for="(item, i) in appMenu"
-          :key="item.text + '' + i"
-          active-class="accent--text"
-        >
-          <template #activator>
-            <v-list-item-icon>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>
-                {{ item.title }}
-              </v-list-item-title>
-            </v-list-item-content>
-          </template>
+<template lang="pug">
+v-app
+  v-navigation-drawer.primary(v-model="drawer" fixed app dark)
+    v-row.py-4
+      v-col.text-center.pb-0(cols="12" md="12")
+        v-avatar
+          template(v-if="session.photo")
+            v-img(:src="photoUrl" alt="Avatar")
+          template(v-else)
+            v-icon(large) mdi-account-circle-outline
+      v-col.white--text.text-center.pb-0(cols="12" md="12")
+        p.mb-0 {{ session.name }} {{ session.lastname }}
+      v-col.text-center.pb-0(cols="6")
+        v-btn.primary.white--text(@click="showProfile") Perfil
+      v-col.text-center(cols="6")
+        v-btn.error.white--text(@click="logout")
+          v-icon.white--text mdi-logout
+          | Salir
+    v-list
+      v-list-item(link to="/")
+        v-list-item-icon
+          v-icon mdi-home
+        v-list-item-content
+          v-list-item-title Inicio
+      v-list-group(v-for="(item, i) in appMenu" :key="item.text + '' + i"
+      active-class="accent--text")
+        template(#activator)
+          v-list-item-icon
+            v-icon {{ item.icon }}
+          v-list-item-content
+            v-list-item-title {{ item.title }}
 
-          <v-list-item
-            v-for="(option, j) in item.items"
-            :key="option.title + '' + j"
-            :to="option.to"
-          >
-            <v-list-item-icon>
-              <v-icon class="white--text">
-                {{ option.icon }}
-              </v-icon>
-            </v-list-item-icon>
-            <v-list-item-title class="white--text">
-              {{ option.title }}
-            </v-list-item-title>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
-    </v-navigation-drawer>
-    <v-app-bar
-      app
-      dark
-      class="primary"
-    >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title>
-        <NuxtLink class="white--text text-decoration-none" to="/">
-          Sonrisas Fuertes
-        </NuxtLink>
-      </v-toolbar-title>
-      <v-spacer />
-      <v-btn
-        icon
-      >
-        <v-icon>
-          mdi-magnify
-        </v-icon>
-      </v-btn>
-      <v-btn
-        icon
-      >
-        <v-icon>
-          mdi-message-text-outline
-        </v-icon>
-      </v-btn>
-      <v-btn
-        icon
-      >
-        <v-icon>
-          mdi-bell-outline
-        </v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click="dialogEdit=true"
-      >
-        <v-icon>
-          mdi-plus
-        </v-icon>
-      </v-btn>
-    </v-app-bar>
-    <v-main>
-      <Nuxt />
-    </v-main>
-    <v-snackbar v-model="snackbar" multi-line :color="$store.state.snackbar.type">
-      {{ $store.state.snackbar.text }}
-      <template #action>
-        <v-btn icon @click="snackbar=false">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </template>
-    </v-snackbar>
-    <dialog-profile v-model="dialogProfile" :profile="profile" />
-  </v-app>
+        v-list-item(v-for="(option, j) in item.items"
+        :key="option.title + '' + j" :to="option.to")
+          v-list-item-icon
+            v-icon.white--text {{ option.icon }}
+          v-list-item-title.white--text {{ option.title }}
+  v-app-bar.primary(app dark)
+    v-app-bar-nav-icon(@click.stop="drawer = !drawer")
+    v-toolbar-title
+      NuxtLink.white--text.text-decoration-none(to="/") Sonrisas Fuertes
+    v-spacer
+    v-btn(icon)
+      v-icon mdi-magnify
+    v-btn(icon)
+      v-icon mdi-message-text-outline
+    v-btn(icon)
+      v-icon mdi-bell-outline
+    v-btn(icon @click="dialogEdit=true")
+      v-icon mdi-plus
+  v-main
+    Nuxt
+  v-snackbar(v-model="snackbar" multi-line
+  :color="$store.state.snackbar.type") {{ $store.state.snackbar.text }}
+    template(#action)
+      v-btn(icon @click="snackbar=false")
+        v-icon mdi-close
+  dialog-profile(v-model="dialogProfile" :profile="profile")
 </template>
 
 <script>

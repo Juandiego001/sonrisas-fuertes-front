@@ -1,7 +1,5 @@
-<template>
-  <div>
-    Reportes
-  </div>
+<template lang="pug">
+div Reportes
 </template>
 
 <script>

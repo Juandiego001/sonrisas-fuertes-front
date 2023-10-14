@@ -1,7 +1,5 @@
-<template>
-  <div>
-    Periodos académicos
-  </div>
+<template lang="pug">
+div Periodos académicos
 </template>
 
 <script>
