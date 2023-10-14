@@ -26,3 +26,6 @@ export const profileUrl = '/api/profile/'
 
 // Groups
 export const groupUrl = '/api/group/'
+
+// Publications
+export const publicationUrl = '/api/publication/'

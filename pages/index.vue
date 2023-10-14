@@ -1,5 +1,7 @@
 <template lang="pug">
-div Home
+v-card.ms-5.mt-5(max-width="300px" hover nuxt to="/board" rounded)
+  v-img(src="classroom.jpg" height="150px")
+  v-card-title.primary.white--text Tablero general
 </template>
 
 <script>
