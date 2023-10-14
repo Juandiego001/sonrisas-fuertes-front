@@ -42,7 +42,9 @@ v-container.pt-0.align-center
             v-row
                 v-spacer
                 v-btn.me-2.primary--text(@click="showUpdate(item)" icon)
-                    v-icon mdi-pencil
+                  v-icon mdi-pencil
+                v-btn.error--text(@click="deletePublication(item)" icon)
+                  v-icon mdi-trash-can
 
     v-dialog(v-model="showUpdatePublication" max-width="700px"
     :fullscreen="$vuetify.breakpoint.smAndDown" scrollable)
@@ -81,6 +83,29 @@ export default {
         description: '',
         updated_by: '',
         updated_at: ''
+      }
+    }
+  },
+
+  watch: {
+    showUpdatePublication (value) {
+      if (!value) {
+        this.form = {
+          _id: '',
+          description: '',
+          updated_by: '',
+          updated_at: ''
+        }
+      }
+    },
+    showOptions (value) {
+      if (!value) {
+        this.form = {
+          _id: '',
+          description: '',
+          updated_by: '',
+          updated_at: ''
+        }
       }
     }
   },
@@ -131,6 +156,19 @@ export default {
         this.getData()
         this.$refs.formUpdate.reset()
         this.showUpdatePublication = false
+        this.showSnackbar(message)
+      } catch (err) {
+        this.showSnackbar(err)
+      }
+    },
+    async deletePublication (item) {
+      try {
+        this.form = (await this.$axios.$get(`${publicationUrl}${item._id}`))
+        this.form.status = false
+        const { message } = (await this.$axios.$patch(
+          `${publicationUrl}${item._id}`, this.form))
+        this.getData()
+        this.$refs.form.reset()
         this.showSnackbar(message)
       } catch (err) {
         this.showSnackbar(err)

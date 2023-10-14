@@ -40,7 +40,7 @@ v-app
     v-toolbar-title
       NuxtLink.white--text.text-decoration-none(to="/") Sonrisas Fuertes
     v-spacer
-    v-btn(icon)
+    v-btn(icon @click="dialogSearch=true")
       v-icon mdi-magnify
     v-btn(icon)
       v-icon mdi-message-text-outline

@@ -1,7 +1,7 @@
 <template lang="pug">
 v-container(fluid)
   v-data-table(:headers="headers" :items="items" :server-items-length="total"
-  :options.sync="options")
+  :options.sync="options" :search="search")
     template(#item.options="{ item }")
       v-btn.mr-2(color="success" depressed icon @click="getStudent(item)")
         v-icon mdi-pencil
@@ -57,6 +57,7 @@ v-container(fluid)
         v-card-actions
           v-spacer
           v-btn(color="primary" depressed type="submit") Guardar
+  dialog-search(v-model="dialogSearch" :doSearch="doSearch")
 </template>
 
 <script>
@@ -81,7 +82,8 @@ export default {
         email: '',
         password: ''
       },
-      photo: null
+      photo: null,
+      search: ''
     }
   },
 
@@ -167,6 +169,10 @@ export default {
       } catch (err) {
         this.showSnackbar(err)
       }
+    },
+    doSearch (value) {
+      this.search = value
+      this.dialogSearch = false
     }
   }
 }
