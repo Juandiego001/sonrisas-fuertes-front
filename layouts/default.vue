@@ -38,7 +38,11 @@ v-app
   v-app-bar.primary(app dark)
     v-app-bar-nav-icon(@click.stop="drawer = !drawer")
     v-toolbar-title
-      NuxtLink.white--text.text-decoration-none(to="/") Sonrisas Fuertes
+      NuxtLink.white--text.text-decoration-none(v-if="breadcrumbs.length == 0"
+      to="/") Sonrisas fuertes
+      template(v-else v-for="item, index in breadcrumbs")
+        NuxtLink.white--text.text-decoration-none(:to="item.to") {{ item.name }}
+        v-icon(v-if="index != breadcrumbs.length - 1") mdi-chevron-right
     v-spacer
     v-btn(icon @click="dialogSearch=true")
       v-icon mdi-magnify
@@ -62,6 +66,7 @@ v-app
 import { mapMutations } from 'vuex'
 import menu from './menu'
 import { photoUrl, accountProfileUrl, logoutUrl } from '~/mixins/routes'
+import pathTranslsations from '~/mixins/pathTranslations'
 
 export default {
   name: 'DefaultLayout',
@@ -81,7 +86,33 @@ export default {
       get () { return this.$store.state.snackbar.snackbar },
       ...mapMutations({ set: 'snackbar/snackbar' })
     },
-    photoUrl () { return `${photoUrl}/${this.session.photoUrl}` }
+    photoUrl () { return `${photoUrl}/${this.session.photoUrl}` },
+    breadcrumbs () {
+      const routes = []
+
+      if (this.$route.path === '/') { return [] }
+
+      const pathRoutes = this.$route.path.split('/')
+      routes.push({ name: 'Sonrisas fuertes', to: '/' })
+      const pathClone = ['']
+      for (let i = 1; i < pathRoutes.length; i++) {
+        pathClone.push(pathRoutes[i])
+
+        if (pathTranslsations[pathRoutes[i]]) {
+          routes.push({
+            name: pathTranslsations[pathRoutes[i]],
+            to: pathClone.join('/')
+          })
+        } else {
+          routes.push({
+            name: pathRoutes[i],
+            to: pathClone.join('/')
+          })
+        }
+      }
+
+      return routes
+    }
   },
 
   beforeMount () {
