@@ -15,10 +15,12 @@ v-row.fill-height.my-0.mx-0.white
             v-col(cols="12" md="8" sm="8")
               text-field-password(v-model="form.password" label="Contraseña"
               :rules="generalRules")
-          v-container.text-end.mb-3
-            v-btn(class="primary--text" elevation="0" @click="forgotPassword")
-              | ¿Olvidó su contraseña?
-          v-btn.primary(type="submit") Iniciar sesión
+            v-col.text-end.pe-0(cols="12" md="8" sm="8")
+              v-btn(class="primary--text" elevation="0"
+              @click="forgotPassword")
+                | ¿Olvidó su contraseña?
+            v-col(cols="12" md="8" sm="8")
+              v-btn.primary(type="submit") Iniciar sesión
 </template>
 
 <script>

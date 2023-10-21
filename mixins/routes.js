@@ -32,3 +32,6 @@ export const publicationUrl = '/api/publication/'
 
 // Comments
 export const commentUrl = '/api/comment/'
+
+// Folders
+export const folderUrl = '/api/folder/'

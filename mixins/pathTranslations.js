@@ -4,5 +4,7 @@ export default {
   users: 'Usuarios',
   admins: 'Administradores',
   teachers: 'Profesores',
-  students: 'Estudiantes'
+  students: 'Estudiantes',
+  activities: 'Actividades',
+  materials: 'Materiales'
 }
