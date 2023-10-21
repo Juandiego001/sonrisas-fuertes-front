@@ -85,6 +85,10 @@ export default {
     }
   },
 
+  head () {
+    return { title: 'Materials' }
+  },
+
   computed: {
     headers () {
       return [

@@ -103,16 +103,6 @@ export default {
       } else {
         this.$refs.form && this.$refs.form.resetValidation()
       }
-    },
-    showOptions (value) {
-      if (!value) {
-        this.form = {
-          _id: '',
-          description: '',
-          updated_by: '',
-          updated_at: ''
-        }
-      }
     }
   },
 
