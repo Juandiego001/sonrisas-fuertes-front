@@ -115,8 +115,19 @@ export default {
       if (!value) {
         this.$refs.form.resetValidation()
         this.$refs.form.reset()
+        this.$refs.formFile && this.$refs.formFile.resetValidation()
+        this.$refs.formFile && this.$refs.formFile.reset()
       } else {
         this.$refs.form && this.$refs.form.resetValidation()
+        this.$refs.formFile && this.$refs.formFile.resetValidation()
+      }
+    },
+    dialogFiles (value) {
+      if (!value) {
+        this.$refs.formFile && this.$refs.formFile.resetValidation()
+        this.$refs.formFile && this.$refs.formFile.reset()
+      } else {
+        this.$refs.formFile && this.$refs.formFile.resetValidation()
       }
     }
   },
