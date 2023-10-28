@@ -14,46 +14,80 @@ v-container(fluid)
     v-form(ref="form" @submit.prevent="saveStudent")
       v-card(flat :tile="$vuetify.breakpoint.smAndDown")
         v-card-title.primary.white--text
-          | {{ form._id ? 'Formulario editar estudiante' : 'Formulario crear estudiante' }}
+          .me-2 {{ formTitle }}
+          v-item-group(v-model="onboarding" class="text-center" mandatory)
+            v-item(v-for="n in 2" :key="`btn-${n}`"
+            v-slot="{ active, toggle }")
+              v-btn.white--text(:input-value="active" icon @click="toggle")
+                v-icon mdi-record
           v-spacer
           v-btn.white--text(icon @click="dialogEdit=false")
             v-icon mdi-close
-        v-card-text.my-3
-          v-row(dense)
-            v-col.primary--text(cols="12" md="12") Información del estudiante
-            v-col(cols="12" md="6")
-              text-field(
-                v-model="form.name"
-                label="Nombre"
-                :rules="generalRules")
-            v-col(cols="12" md="6")
-              text-field(v-model="form.lastname" label="Apellido"
-              :rules="generalRules")
-            v-col(cols="12" md="6")
-              text-field(v-model="form.document" label="Cédula"
-              :rules="generalRules")
-            v-col(cols="12" md="6")
-              text-field(v-model="form.username" label="Usuario"
-              :rules="generalRules")
-            v-col(cols="12" md="12")
-              text-field(v-model="form.email" label="Correo"
-              :rules="generalRules")
-            v-col(cols="12" md="12")
-              text-field-password(v-model="form.password" label="Contraseña"
-              :rules="passwordEmptyRules")
-            v-col(cols="12" md="12")
-              v-file-input(v-model="photo" filled dense
-              prepend-inner-icon="mdi-paperclip" :prepend-icon="null"
-              label="Foto" hide-details="auto")
-          v-row(v-if="form._id" dense)
-            v-col(cols="12")
-              v-select(v-model="form.status" label="Estado" filled dense
-              hide-details="auto" :items="userStatus" item-value="value"
-              item-text="text")
-            v-col.text-caption(cols="12" md="6") ID: {{ form._id }}
-            v-col.text-caption.text-md-right(cols="12" md="6")
-              | Modificado por: {{ form.updated_by }}
-              | {{ $moment(form.updated_at) }}
+        v-window(v-model="onboarding")
+          v-window-item
+            v-card(flat)
+              v-card-text.my-3
+                v-row(dense)
+                  v-col.primary--text(cols="12" md="12")
+                    | Información del estudiante
+                  v-col(cols="12" md="6")
+                    text-field(v-model="form.name" label="Nombre"
+                    :rules="generalRules")
+                  v-col(cols="12" md="6")
+                    text-field(v-model="form.lastname" label="Apellido"
+                    :rules="generalRules")
+                  v-col(cols="12" md="6")
+                    text-field(v-model="form.document" label="Cédula"
+                    :rules="generalRules")
+                  v-col(cols="12" md="6")
+                    text-field(v-model="form.username" label="Usuario"
+                    :rules="generalRules")
+                  v-col(cols="12" md="12")
+                    text-field(v-model="form.email" label="Correo"
+                    :rules="generalRules")
+                  v-col(cols="12" md="12")
+                    text-field-password(v-model="form.password" label="Contraseña"
+                    :rules="passwordEmptyRules")
+                  v-col(cols="12" md="12")
+                    v-file-input(v-model="photo" filled dense
+                    prepend-inner-icon="mdi-paperclip" :prepend-icon="null"
+                    label="Foto" hide-details="auto")
+                v-row(v-if="form._id" dense)
+                  v-col(cols="12")
+                    v-select(v-model="form.status" label="Estado" filled dense
+                    hide-details="auto" :items="userStatus" item-value="value"
+                    item-text="text")
+                  v-col.text-caption(cols="12" md="6") ID: {{ form._id }}
+                  v-col.text-caption.text-md-right(cols="12" md="6")
+                    | Modificado por: {{ form.updated_by }}
+                    | {{ $moment(form.updated_at) }}
+          v-window-item
+            v-card(flat)
+              v-card-text.my-3
+                v-row(dense)
+                  v-col.primary--text(cols="12" md="12")
+                    | Información del estudiante
+                  v-col(cols="12" md="6")
+                    text-field(v-model="form.age" label="Edad")
+                  v-col(cols="12" md="6")
+                    text-field(v-model="form.born_at"
+                    label="Fecha de nacimiento")
+                  v-col(cols="12" md="6")
+                    text-field(v-model="form.diagnosis"
+                    label="Diagnóstico")
+                  v-col(cols="12" md="6")
+                    text-field(v-model="form.eps"
+                    label="EPS")
+                  v-col(cols="12" md="6")
+                    v-select(v-model="form.gender" :items="genders"
+                    label="Género" hide-details="auto")
+                  v-col(cols="12" md="6")
+                    v-checkbox(v-model="form.godfather" label="Padrino"
+                    hide-details="auto")
+                  v-col(cols="12" md="12")
+                    v-textarea(filled dense v-model="form.observations"
+                    label="Observaciones" hide-details="auto")
+
         v-card-actions
           v-spacer
           v-btn(color="primary" depressed type="submit") Guardar
@@ -73,6 +107,7 @@ export default {
       options: {},
       total: -1,
       items: [],
+      onboarding: 0,
       form: {
         _id: '',
         name: '',
@@ -117,6 +152,14 @@ export default {
           value: 'INACTIVE'
         }
       ]
+    },
+    formTitle () {
+      return this.form._id
+        ? 'Formulario editar estudiante'
+        : 'Formulario crear estudiante'
+    },
+    genders () {
+      return ['Masculino', 'Femenino']
     }
   },
 
@@ -126,6 +169,7 @@ export default {
       if (!value) {
         this.$refs.form.reset()
         this.form._id = ''
+        this.onboarding = 0
       } else {
         this.$refs.form && this.$refs.form.resetValidation()
       }

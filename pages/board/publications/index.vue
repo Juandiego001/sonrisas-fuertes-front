@@ -5,34 +5,15 @@ v-container.pt-0.align-center
     gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)")
       v-card-title.white--text.text-h5 Publicaciones
 
-  v-card.mx-auto.mt-4.py-3(v-for="item in items" rounded max-width="800px"
-  :key="`publication.${item._id}`")
-    v-card-text.px-0
-      v-row.mx-3
-        v-col.d-flex.align-center.justify-center(cols="12" md="1")
-          v-icon mdi-account
-        v-col.text-start(cols="12" md="11")
-          span {{ item.fullname }}
-          p {{ $moment(item.created_at) }}
-        v-col(cols="12")
-          p.subtitle.black--text {{ item.title }}
-          p.subtitle.black--text {{ item.description }}
-    v-card-actions
-      v-row
-        v-spacer
-        v-btn.me-2(nuxt :to="`/board/publications/${item._id}`" icon)
-          v-icon mdi-eye
-        template(v-if="canEditComment(item)")
-        v-btn.me-2.primary--text(@click="getPublication(item)" icon)
-          v-icon mdi-pencil
-        v-btn.error--text(@click="showDelete(item)" icon)
-          v-icon mdi-trash-can
+  card-publication(v-for="item in items" :item="item" :getData="getData"
+  :getPublication="getPublication" :key="`publication.${item._id}`"
+  :routeDetail="'/board/publications'")
 
-  v-dialog(v-model="dialogEdit" max-width="700px"
-  :fullscreen="$vuetify.breakpoint.smAndDown" scrollable)
+  v-dialog(v-model="dialogEdit" max-width="700px" scrollable
+  :fullscreen="$vuetify.breakpoint.smAndDown")
     v-card(flat :tile="$vuetify.breakpoint.smAndDown")
       v-card-title.primary.white--text
-        | {{ form._id ? 'Formulario editar publicación' : 'Formulario crear publicación' }}
+        | {{ formTitle }}
         v-spacer
         v-btn.white--text(icon @click="dialogEdit=false")
           v-icon mdi-close
@@ -55,19 +36,6 @@ v-container.pt-0.align-center
           v-card-actions
               v-spacer
               v-btn(color="primary" type="submit") Guardar
-
-  v-dialog(v-model="showDeletePublication" max-width="500px"
-  :fullscreen="$vuetify.breakpoint.smAndDown" scrollable)
-    v-card(flat :tile="$vuetify.breakpoint.smAndDown")
-      v-card-title.error.white--text
-        | Confirmar eliminación
-        v-spacer
-        v-btn.white--text(icon @click="showDeletePublication=false")
-          v-icon mdi-close
-      v-card-text.mt-3 ¿Seguro que desea eliminar la publicación?
-      v-card-actions
-        v-spacer
-        v-btn.error(@click="deletePublication") Confirmar
 </template>
 
 <script>
@@ -93,6 +61,14 @@ export default {
 
   head () {
     return { title: 'Publications' }
+  },
+
+  computed: {
+    formTitle () {
+      return this.form._id
+        ? 'Editar publicación'
+        : 'Crear publicación'
+    }
   },
 
   watch: {
@@ -142,30 +118,6 @@ export default {
       } catch (err) {
         this.showSnackbar(err)
       }
-    },
-    async showDelete (item) {
-      try {
-        this.form = (await this.$axios.$get(`${publicationUrl}${item._id}`))
-        this.showDeletePublication = true
-      } catch (err) {
-        this.showSnackbar(err)
-      }
-    },
-    async deletePublication () {
-      try {
-        this.form.status = false
-        const { message } = (await this.$axios.$patch(
-          `${publicationUrl}${this.form._id}`, this.form))
-        this.getData()
-        this.showDeletePublication = false
-        this.showSnackbar(message)
-      } catch (err) {
-        this.showSnackbar(err)
-      }
-    },
-    canEditComment (item) {
-      return this.$store.state.session.profiles.includes('Administrador') ||
-      item.username === this.$store.state.session.username
     }
   }
 }

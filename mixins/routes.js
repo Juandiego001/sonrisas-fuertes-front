@@ -30,8 +30,14 @@ export const groupUrl = '/api/group/'
 // Publications
 export const publicationUrl = '/api/publication/'
 
+// Activites
+export const activityUrl = '/api/publication/activities'
+
 // Comments
 export const commentUrl = '/api/comment/'
 
 // Folders
 export const folderUrl = '/api/folder/'
+
+// Attachments
+export const attachmentUrl = '/api/attachment/'
