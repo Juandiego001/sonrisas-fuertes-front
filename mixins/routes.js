@@ -31,7 +31,7 @@ export const groupUrl = '/api/group/'
 export const publicationUrl = '/api/publication/'
 
 // Activites
-export const activityUrl = '/api/publication/activities/'
+export const activityUrl = '/api/publication/activities'
 
 // Comments
 export const commentUrl = '/api/comment/'
