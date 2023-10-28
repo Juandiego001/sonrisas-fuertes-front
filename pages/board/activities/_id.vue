@@ -141,7 +141,7 @@ export default {
     async getData () {
       try {
         this.activity = await this.$axios.$get(
-          `${activityUrl}/${this.$route.params.id}`)
+          `${activityUrl}${this.$route.params.id}`)
       } catch (err) {
         this.showSnackbar(err)
       }
