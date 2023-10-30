@@ -1,31 +1,31 @@
 <template lang="pug">
 v-dialog(:value="dialog" max-width="600px" scrollable
-  :fullscreen="$vuetify.breakpoint.smAndDown" @input="ev => $emit('input', ev)")
-    v-card(flat :tile="$vuetify.breakpoint.smAndDown")
-      v-card-title.primary.white--text
-        | {{ formTitle }}
-        v-spacer
-        v-btn(color="primary" fab small depressed @click="dialogEdit=false")
-          v-icon mdi-close
-      v-card-text.mt-3
-        v-form(ref="form" @submit.prevent="saveComment")
-          v-row(dense)
-            v-col.primary--text(cols="12")
-              | Información del comentario
-            v-col(cols="12")
-              v-textarea(v-model="form.description" rows="2" auto-grow
-              label="Comentario" :rules="generalRules")
-            v-col.d-flex(cols="12" md="12")
-              v-btn.me-2(icon)
-                v-icon.primary--text mdi-upload
-              v-btn(icon)
-                v-icon.primary--text mdi-attachment
-          v-card-actions
-            v-spacer
-            v-btn(color="primary" type="submit") Guardar
+:fullscreen="$vuetify.breakpoint.smAndDown" @input="ev => $emit('input', ev)")
+  v-card(flat :tile="$vuetify.breakpoint.smAndDown")
+    v-card-title.primary.white--text
+      | {{ formTitle }}
+      v-spacer
+      v-btn(color="primary" fab small depressed @click="dialogEdit=false")
+        v-icon mdi-close
+    v-card-text.mt-3
+      v-form(ref="form" @submit.prevent="saveComment")
+        v-row(dense)
+          v-col.primary--text(cols="12")
+            | Información del comentario
+          v-col(cols="12")
+            v-textarea(v-model="form.description" rows="2" auto-grow
+            label="Comentario" :rules="generalRules")
+          v-col.d-flex(cols="12" md="12")
+            v-btn.me-2(icon)
+              v-icon.primary--text mdi-upload
+            v-btn(icon)
+              v-icon.primary--text mdi-attachment
+        v-card-actions
+          v-spacer
+          v-btn(color="primary" type="submit") Guardar
 
-    dialog-files(v-model="showFiles" :addFiles="addFiles")
-    dialog-links(v-model="showAddLinks" :addLinks="addLinks")
+  dialog-files(v-model="showFiles" :addFiles="addFiles")
+  dialog-links(v-model="showLinks" :addLinks="addLinks")
 </template>
 
 <script>
@@ -68,7 +68,7 @@ export default {
   data () {
     return {
       showFiles: false,
-      showAddLinks: false,
+      showLinks: false,
       files: [],
       links: [],
       form: {
@@ -106,16 +106,32 @@ export default {
   },
 
   methods: {
+    getFormData () {
+      const formData = new FormData()
+      for (const key of Object.keys(this.form)) {
+        formData.append(key, this.form[key])
+      }
+      if (this.files.length) {
+        for (const file of this.files) {
+          formData.append('files', file)
+        }
+      }
+      if (this.links.length) {
+        formData.append('links', this.links)
+      }
+      return formData
+    },
     async saveComment () {
       try {
         if (!this.$refs.form.validate()) { return }
         let message
         if (this.form._id) {
           ({ message } = await this.$axios.$patch(
-                `${commentUrl}${this.form._id}`, this.form))
+            `${commentUrl}${this.form._id}`, this.form))
         } else {
-          this.form.publicationid = this.publication._id;
-          ({ message } = await this.$axios.$post(commentUrl, this.form))
+          this.form.publicationid = this.publicationid;
+          ({ message } = await this.$axios.$post(commentUrl,
+            this.getFormData()))
         }
         this.getData()
         this.dialogEdit = false

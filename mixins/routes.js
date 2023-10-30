@@ -39,5 +39,5 @@ export const commentUrl = '/api/comment/'
 // Folders
 export const folderUrl = '/api/folder/'
 
-// Attachments
-export const attachmentUrl = '/api/attachment/'
+// Files
+export const fileUrl = '/api/file/'

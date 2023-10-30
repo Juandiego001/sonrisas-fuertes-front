@@ -28,7 +28,8 @@ v-container
               .black--text {{ activity.comments[0].description }}
             template(v-if="activity.comments[0].attachments.length")
               v-col.py-0.d-flex.align-center(cols="12"
-              v-for="attachment in activity.comments[0].attachments")
+              v-for="attachment, index in activity.comments[0].attachments"
+              :key="`attachment.${index}`")
                   template(v-if="!attachment.isLink")
                       v-icon.primary--text.me-1 mdi-upload
                       a(:href="attachment.url") {{ attachment.real_name }}
@@ -67,14 +68,14 @@ v-container
                 v-card-actions
                   v-btn(icon @click="showFiles=true")
                     v-icon.primary--text mdi-upload
-                  v-btn(icon @click="showAddLinks=true")
+                  v-btn(icon @click="showLinks=true")
                     v-icon.primary--text mdi-attachment
                   v-spacer
                   v-btn(color="primary" type="submit"
                   :disabled="isDisabled") Guardar
 
     dialog-files(v-model="showFiles" :addFiles="addFiles")
-    dialog-links(v-model="showAddLinks" :addLinks="addLinks")
+    dialog-links(v-model="showLinks" :addLinks="addLinks")
     dialog-comment(v-model="dialogEdit" :publicationid="activity.id"
     :getData="getData" :comment="form")
     dialog-delete-comment(v-model="showDeleteComment" :getData="getData"
@@ -91,7 +92,7 @@ export default {
     return {
       showDeleteComment: false,
       showFiles: false,
-      showAddLinks: false,
+      showLinks: false,
       activity: {},
       files: [],
       links: [],
@@ -169,9 +170,9 @@ export default {
           ({ message } = await this.$axios.$patch(
                 `${commentUrl}${this.form._id}`, this.form))
         } else {
-          this.form.publicationid = this.activity._id
-          const formData = this.getFormData();
-          ({ message } = await this.$axios.$post(commentUrl, formData))
+          this.form.publicationid = this.activity._id;
+          ({ message } = await this.$axios.$post(commentUrl,
+            this.getFormData()))
         }
         this.getData()
         this.dialogEdit = false

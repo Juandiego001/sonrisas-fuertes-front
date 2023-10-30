@@ -5,9 +5,14 @@ v-container.pt-0.align-center
     gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)")
       v-card-title.white--text.text-h5 Publicaciones
 
-  card-publication(v-for="item in items" :item="item" :getData="getData"
-  :getPublication="getPublication" :key="`publication.${item._id}`"
-  :routeDetail="'/board/publications'")
+  v-card.mx-auto(flat max-width="800px")
+    v-card-text.mx-0.px-0
+      v-data-iterator(:items="items" :search="search"
+      :itemsPerPage.sync="itemsPerPage"
+      :footer-props="{itemsPerPageOptions: [3, 5, 7]}")
+        template(#item="{ item }")
+          card-publication(:item="item" :getData="getData"
+          :getPublication="getPublication" :key="`publication.${item._id}`")
 
   v-dialog(v-model="dialogEdit" max-width="700px" scrollable
   :fullscreen="$vuetify.breakpoint.smAndDown")
@@ -36,6 +41,8 @@ v-container.pt-0.align-center
           v-card-actions
               v-spacer
               v-btn(color="primary" type="submit") Guardar
+
+  dialog-search(v-model="dialogSearch" :doSearch="doSearch")
 </template>
 
 <script>
@@ -48,6 +55,8 @@ export default {
     return {
       showDeletePublication: false,
       items: [],
+      search: '',
+      itemsPerPage: 3,
       form: {
         _id: '',
         title: '',
@@ -118,6 +127,10 @@ export default {
       } catch (err) {
         this.showSnackbar(err)
       }
+    },
+    doSearch (search) {
+      this.search = search
+      this.dialogSearch = false
     }
   }
 }
