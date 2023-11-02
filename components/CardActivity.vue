@@ -20,7 +20,7 @@ v-card.mx-auto.mt-4(rounded max-width="800px")
         v-col(cols="12" v-for="link, index in item.links"
         :key="`act.link${index}`")
           v-icon.primary--text.me-1 mdi-attachment
-          a(:href="link.url") {{ link.shortcut }}
+          a(:href="link.url" target="_blank") {{ link.shortcut }}
 
   v-card-actions
     v-row
@@ -33,24 +33,13 @@ v-card.mx-auto.mt-4(rounded max-width="800px")
           v-btn.error--text(@click="showDelete(item)" icon)
             v-icon mdi-trash-can
 
-  v-dialog(v-model="showDeleteActivity" max-width="500px"
-  :fullscreen="$vuetify.breakpoint.smAndDown" scrollable)
-    v-card(flat :tile="$vuetify.breakpoint.smAndDown")
-      v-card-title.error.white--text
-        | Confirmar eliminación
-        v-spacer
-        v-btn.white--text(icon @click="showDeleteActivity=false")
-          v-icon mdi-close
-      v-card-text.mt-3 ¿Seguro que desea eliminar la actividad?
-      v-card-actions
-        v-spacer
-        v-btn.error(@click="deleteActivity") Confirmar
+  dialog-delete(v-model="showDeleteActivity" text="actividad"
+  :doDelete="deleteActivity")
 </template>
 
 <script>
 import { activityUrl, fileUrl } from '~/mixins/routes'
 export default {
-
   props: {
     item: {
       default: () => ({
@@ -95,9 +84,10 @@ export default {
     },
     async deleteActivity () {
       try {
-        this.form.status = false
+        const formData = new FormData()
+        formData.append('status', false)
         const { message } = (await this.$axios.$patch(
-            `${activityUrl}${this.form._id}`, this.form))
+            `${activityUrl}${this.form._id}`, formData))
         this.getData()
         this.showDeleteActivity = false
         this.showSnackbar(message)

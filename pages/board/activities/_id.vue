@@ -27,7 +27,7 @@ v-container
             v-col(cols="12")
               .black--text {{ activity.comments[0].description }}
             template(v-if="activity.comments[0].attachments.length")
-              v-col.py-0.d-flex.align-center(cols="12"
+              v-col.d-flex.align-center(cols="12"
               v-for="attachment, index in activity.comments[0].attachments"
               :key="`attachment.${index}`")
                   template(v-if="!attachment.isLink")

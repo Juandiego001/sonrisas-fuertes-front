@@ -41,3 +41,6 @@ export const folderUrl = '/api/folder/'
 
 // Files
 export const fileUrl = '/api/file/'
+
+// Links
+export const linkUrl = '/api/link/'

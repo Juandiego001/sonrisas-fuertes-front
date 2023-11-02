@@ -48,6 +48,7 @@ export default {
   },
   data () {
     return {
+      text: '',
       form: {
         _id: '',
         publicationid: '',

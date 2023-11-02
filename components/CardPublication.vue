@@ -10,6 +10,18 @@ v-card.mx-auto.mt-4(rounded max-width="800px")
       v-col(cols="12")
         p.subtitle.black--text {{ item.title }}
         p.subtitle.black--text {{ item.description }}
+      template(v-if="item.files")
+        v-col(cols="12" v-for="file, index in item.files"
+        :key="`act.file${index}`")
+          v-icon.primary--text.me-1 mdi-upload
+          a(:href="`${downloadUrl}/${file._id}`" target="_blank")
+            | {{ file.real_name }}
+      template(v-if="item.links")
+        v-col(cols="12" v-for="link, index in item.links"
+        :key="`act.link${index}`")
+          v-icon.primary--text.me-1 mdi-attachment
+          a(:href="link.url" target="_blank") {{ link.shortcut }}
+
   v-card-actions
     v-row
       v-col.text-end
@@ -21,24 +33,13 @@ v-card.mx-auto.mt-4(rounded max-width="800px")
           v-btn.error--text(@click="showDelete(item)" icon)
             v-icon mdi-trash-can
 
-  v-dialog(v-model="showDeletePublication" max-width="500px"
-  :fullscreen="$vuetify.breakpoint.smAndDown" scrollable)
-    v-card(flat :tile="$vuetify.breakpoint.smAndDown")
-      v-card-title.error.white--text
-        | Confirmar eliminación
-        v-spacer
-        v-btn.white--text(icon @click="showDeletePublication=false")
-          v-icon mdi-close
-      v-card-text.mt-3 ¿Seguro que desea eliminar la publicación?
-      v-card-actions
-        v-spacer
-        v-btn.error(@click="deletePublication") Confirmar
+  dialog-delete(v-model="showDeletePublication" text="publicacion"
+  :doDelete="deletePublication")
 </template>
 
 <script>
-import { publicationUrl } from '~/mixins/routes'
+import { publicationUrl, fileUrl } from '~/mixins/routes'
 export default {
-
   props: {
     item: {
       default: () => ({
@@ -66,6 +67,12 @@ export default {
     }
   },
 
+  computed: {
+    downloadUrl () {
+      return `${fileUrl}download`
+    }
+  },
+
   methods: {
     async showDelete (item) {
       try {
@@ -77,9 +84,10 @@ export default {
     },
     async deletePublication () {
       try {
-        this.form.status = false
+        const formData = new FormData()
+        formData.append('status', false)
         const { message } = (await this.$axios.$patch(
-            `${publicationUrl}${this.form._id}`, this.form))
+          `${publicationUrl}${this.form._id}`, formData))
         this.getData()
         this.showDeletePublication = false
         this.showSnackbar(message)
