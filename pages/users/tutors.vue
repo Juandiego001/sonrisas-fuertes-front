@@ -3,20 +3,20 @@ v-container(fluid)
   v-data-table(:headers="headers" :items="items" :server-items-length="total"
   :options.sync="options" :search="search")
     template(#item.options="{ item }")
-      v-btn.mr-2(color="success" depressed icon @click="getStudent(item)")
+      v-btn.mr-2(color="success" depressed icon @click="getTutor(item)")
         v-icon mdi-pencil
       v-btn.mr-2(v-if="item.status === 'PENDING'" depressed icon
         @click="resendLink(item)")
         v-icon mdi-email-fast
 
   v-dialog(v-model="dialogEdit" max-width="600px"
-    :fullscreen="$vuetify.breakpoint.smAndDown" scrollable)
-    v-form(ref="form" @submit.prevent="saveStudent")
+  :fullscreen="$vuetify.breakpoint.smAndDown" scrollable)
+    v-form(ref="form" @submit.prevent="saveTutor")
       v-card(flat :tile="$vuetify.breakpoint.smAndDown")
         v-card-title.primary.white--text
           .me-2 {{ formTitle }}
           v-item-group(v-model="onboarding" class="text-center" mandatory)
-            v-item(v-for="n in 3" :key="`btn-${n}`"
+            v-item(v-for="n in 2" :key="`btn-${n}`"
             v-slot="{ active, toggle }")
               v-btn.white--text(:input-value="active" icon @click="toggle")
                 v-icon mdi-record
@@ -28,8 +28,7 @@ v-container(fluid)
             v-card(flat)
               v-card-text.my-3
                 v-row(dense)
-                  v-col.primary--text(cols="12" md="12")
-                    | Información del estudiante
+                  v-col.primary--text(cols="12" md="12") Información del acudiente
                   v-col(cols="12" md="6")
                     text-field(v-model="form.name" label="Nombre"
                     :rules="generalRules")
@@ -57,47 +56,16 @@ v-container(fluid)
               v-card-text.my-3
                 v-row(dense)
                   v-col.primary--text(cols="12" md="12")
-                    | Información del estudiante
+                    | Información del acudiente
                   v-col(cols="12" md="6")
-                    text-field(v-model="form.hospital"
-                    label="Clínica de atención" :rules="[]")
+                    text-field(v-model="form.kinship"
+                    label="Parentesco" :rules="[]")
                   v-col(cols="12" md="6")
-                    text-field(v-model="form.diagnosis"
-                    label="Diagnóstico" :rules="[]")
-                  v-col(cols="12" md="6")
-                    text-field(v-model="form.eps"
-                    label="EPS" :rules="[]")
-                  v-col(cols="12" md="6")
-                    text-field(v-model="form.born_at"
-                    label="Fecha de nacimiento" :rules="[]")
-                  v-col(cols="12" md="6")
-                    v-select(v-model="form.gender" filled dense :items="genders"
-                    label="Género" hide-details="auto")
-                  v-col(cols="12" md="6")
-                    v-checkbox(v-model="form.godfather" label="¿Tiene padrino?"
-                    hide-details="auto")
-          v-window-item
-            v-card(flat)
-              v-card-text.my-3
-                v-row(dense)
-                  v-col.primary--text(cols="12" md="12")
-                    | Información del estudiante
+                    text-field(v-model="form.phone"
+                    label="Teléfono" :rules="[]")
                   v-col(cols="12" md="12")
-                    v-select(v-model="form.tutorsid" filled dense multiple
-                    small-chips :items="tutors" label="Acudientes"
-                    hide-details="auto" item-text="full_relationship"
-                    item-value="_id")
-                  v-col(cols="12" md="6")
-                    text-field(v-model="form.city" label="Ciudad" :rules="[]")
-                  v-col(cols="12" md="6")
-                    text-field(v-model="form.neighborhood"
-                    label="Barrio" :rules="[]")
-                  v-col(cols="12" md="12")
-                    text-field(v-model="form.address"
-                    label="Dirección" :rules="[]")
-                  v-col(cols="12" md="12")
-                    v-textarea(filled dense v-model="form.observations"
-                    label="Observaciones" hide-details="auto")
+                    v-select(v-model="form.regime" filled dense :items="regimes"
+                    label="Régimen" hide-details="auto")
                 v-row(v-if="form._id" dense)
                   v-col(cols="12")
                     v-select(v-model="form.status" label="Estado" filled dense
@@ -114,19 +82,18 @@ v-container(fluid)
 </template>
 
 <script>
-import passwordsEmptyRules from '../../mixins/form-rules/passwordsEmpty'
 import generalRules from '~/mixins/form-rules/general-rules'
-import { studentUrl, tutorUrl } from '~/mixins/routes'
+import passwordEmptyRules from '~/mixins/form-rules/passwordsEmpty'
+import { resetPasswordUrl, tutorUrl } from '~/mixins/routes'
 
 export default {
-  mixins: [generalRules, passwordsEmptyRules],
+  mixins: [generalRules, passwordEmptyRules],
 
   data () {
     return {
       options: {},
       total: -1,
       items: [],
-      tutors: [],
       onboarding: 0,
       form: {
         _id: '',
@@ -135,7 +102,8 @@ export default {
         document: '',
         username: '',
         email: '',
-        password: ''
+        password: '',
+        status: ''
       },
       photo: null,
       search: ''
@@ -143,13 +111,13 @@ export default {
   },
 
   head () {
-    return { title: 'Students' }
+    return { title: 'Tutors' }
   },
 
   computed: {
     headers () {
       return [
-        { text: 'Estudiante', value: 'fullname' },
+        { text: 'Acudiente', value: 'fullname' },
         { text: 'Usuario', value: 'username' },
         { text: 'Email', value: 'email' },
         { text: 'Estado', value: 'status' },
@@ -175,11 +143,20 @@ export default {
     },
     formTitle () {
       return this.form._id
-        ? 'Editar estudiante'
-        : 'Crear estudiante'
+        ? 'Editar acudiente'
+        : 'Crear acudiente'
     },
-    genders () {
-      return ['Niño', 'Niña']
+    regimes () {
+      return [
+        {
+          text: 'Contributivo',
+          value: 'CONTRIBUTIVE'
+        },
+        {
+          text: 'Subsidiado',
+          value: 'SUBSIDIZED'
+        }
+      ]
     }
   },
 
@@ -191,7 +168,6 @@ export default {
         this.form._id = ''
         this.onboarding = 0
       } else {
-        this.getTutors()
         this.$refs.form && this.$refs.form.resetValidation()
       }
     }
@@ -203,21 +179,21 @@ export default {
   methods: {
     async getData () {
       try {
-        const data = await this.$axios.$get(studentUrl)
+        const data = await this.$axios.$get(tutorUrl)
         this.items = data.items
       } catch (err) {
         this.showSnackbar(err)
       }
     },
-    async saveStudent () {
+    async saveTutor () {
       try {
         if (!this.$refs.form.validate()) { return }
         let message
         if (this.form._id) {
           ({ message } = await this.$axios.$patch(
-            `${studentUrl}${this.form._id}`, this.form))
+            `${tutorUrl}${this.form._id}`, this.form))
         } else {
-          ({ message } = await this.$axios.$post(studentUrl, this.form))
+          ({ message } = await this.$axios.$post(tutorUrl, this.form))
         }
 
         this.getData()
@@ -227,19 +203,20 @@ export default {
         this.showSnackbar(err)
       }
     },
-    async getStudent (item) {
+    async getTutor (item) {
       try {
-        this.form = (await this.$axios.$get(`${studentUrl}${item._id}`))
-        // eslint-disable-next-line no-console
-        console.log('form*******', this.form)
+        const tutor = await this.$axios.$get(`${tutorUrl}${item._id}`)
+        this.form = tutor
         this.dialogEdit = true
       } catch (err) {
         this.showSnackbar(err)
       }
     },
-    async getTutors () {
+    async resendLink (item) {
       try {
-        this.tutors = (await this.$axios.$get(tutorUrl)).items
+        const { message } = await this.$axios.$post(resetPasswordUrl,
+          { email: item.email })
+        this.showSnackbar(message)
       } catch (err) {
         this.showSnackbar(err)
       }

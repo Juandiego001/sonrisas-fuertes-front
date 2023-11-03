@@ -130,6 +130,8 @@ export default {
           updated_at: ''
         }
         this.$refs.form.resetValidation()
+        this.files = []
+        this.links = []
       } else {
         this.form = this.$clone(this.publication)
         this.$refs.form && this.$refs.form.resetValidation()

@@ -18,6 +18,9 @@ export const teacherUrl = '/api/teacher/'
 // Student
 export const studentUrl = '/api/student/'
 
+// Tutor
+export const tutorUrl = '/api/tutor/'
+
 // Permissions
 export const permissionUrl = '/api/permission'
 

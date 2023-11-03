@@ -30,6 +30,11 @@ export default [
         to: '/users/teachers'
       },
       {
+        icon: 'mdi-human-male-boy',
+        title: 'Acudientes',
+        to: '/users/tutors'
+      },
+      {
         icon: 'mdi-school',
         title: 'Estudiantes',
         to: '/users/students'

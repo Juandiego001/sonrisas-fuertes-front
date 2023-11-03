@@ -59,6 +59,7 @@ import generalRules from '~/mixins/form-rules/general-rules'
 
 export default {
   mixins: [generalRules],
+
   model: {
     prop: 'dialog',
     event: 'input'
@@ -85,6 +86,7 @@ export default {
       type: Function
     }
   },
+
   data () {
     return {
       showDeleteAttachments: false,
@@ -105,6 +107,7 @@ export default {
       }
     }
   },
+
   computed: {
     formTitle () {
       return this.form._id
@@ -128,6 +131,8 @@ export default {
           updated_at: ''
         }
         this.$refs.form.resetValidation()
+        this.files = []
+        this.links = []
       } else {
         this.form = this.$clone(this.activity)
         this.$refs.form && this.$refs.form.resetValidation()
