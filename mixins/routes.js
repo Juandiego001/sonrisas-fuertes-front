@@ -39,6 +39,9 @@ export const activityUrl = '/api/activity/'
 // Comments
 export const commentUrl = '/api/comment/'
 
+// Deliveries
+export const deliveryUrl = '/api/delivery/'
+
 // Folders
 export const folderUrl = '/api/folder/'
 

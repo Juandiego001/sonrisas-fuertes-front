@@ -17,37 +17,37 @@ v-container
             v-col(cols="12")
               pre.body-2 {{ activity.description }}
 
-    v-col(cols="12" md="6")
+    v-col(v-if="!canSearch" cols="12" md="6")
       v-card(max-width="400px")
-        v-card-title.primary--text {{ formTitleDelivery() }}
+        v-card-title.primary--text {{ formTitle }}
 
         //- Para mostrar la edición de la entrega
-        v-card-text(v-if="activity.comments && activity.comments.length")
+        v-card-text(v-if="activity.delivery")
           v-row
             v-col(cols="12")
-              .black--text {{ activity.comments[0].description }}
-            template(v-if="activity.comments[0].attachments.length")
-              v-col.d-flex.align-center(cols="12"
-              v-for="attachment, index in activity.comments[0].attachments"
+              .black--text {{ activity.delivery.description }}
+            v-col.d-flex.align-center(cols="12"
+              v-for="file, index in activity.delivery.files"
               :key="`attachment.${index}`")
-                  template(v-if="!attachment.isLink")
-                      v-icon.primary--text.me-1 mdi-upload
-                      a(:href="attachment.url") {{ attachment.real_name }}
-                  template(v-else)
-                      v-icon.primary--text.me-1 mdi-attachment
-                      a(:href="attachment.url") {{ attachment.url }}
+                v-icon.primary--text.me-1 mdi-upload
+                a(:href="`${downloadUrl}/${file._id}`" target="_blank")
+                  | {{ file.real_name }}
+            v-col(cols="12"
+            v-for="link, index in activity.delivery.links")
+              v-icon.primary--text.me-1 mdi-attachment
+              a(:href="link.url" target="_blank") {{ link.url }}
             v-col.d-flex(cols="12")
               v-spacer
               v-btn(icon color="primary"
-              @click="getComment(activity.comments[0])")
+              @click="getDelivery(activity.delivery)")
                 v-icon mdi-pencil
               v-btn(icon color="error"
-              @click="showDelete(activity.comments[0])")
+              @click="showDelete(activity.delivery)")
                 v-icon mdi-trash-can
 
         //- Para mostrar la creación de la entrega
         v-card-text(v-else)
-          v-form(ref="form" @submit.prevent="saveComment")
+          v-form(ref="form" @submit.prevent="saveDelivery")
             v-row
               v-col(cols="12")
                 v-textarea(v-model="form.description"  filled dense
@@ -71,34 +71,39 @@ v-container
                   v-btn(icon @click="showLinks=true")
                     v-icon.primary--text mdi-attachment
                   v-spacer
-                  v-btn(color="primary" type="submit"
-                  :disabled="isDisabled") Guardar
+                  v-btn(v-if="isVisible" color="primary" type="submit") Guardar
 
     dialog-files(v-model="showFiles" :addFiles="addFiles")
     dialog-links(v-model="showLinks" :addLinks="addLinks")
-    dialog-comment(v-model="dialogEdit" :publicationid="activity.id"
+    dialog-delivery(v-model="dialogEdit" :activityid="activity.id"
     :getData="getData" :comment="form")
-    dialog-delete-comment(v-model="showDeleteComment" :getData="getData"
-    :comment="form")
+    dialog-delete(v-model="showDeleteDelivery" text="entrega"
+    :doDelete="deleteDelivery")
 </template>
 
 <script>
-import { activityUrl, commentUrl } from '~/mixins/routes'
+import { activityUrl, deliveryUrl, fileUrl } from '~/mixins/routes'
 import generalRules from '~/mixins/form-rules/general-rules'
 
 export default {
   mixins: [generalRules],
   data () {
     return {
-      showDeleteComment: false,
+      showDeleteDelivery: false,
       showFiles: false,
       showLinks: false,
-      activity: {},
+      activity: {
+        title: '',
+        description: '',
+        created_at: '',
+        updated_at: '',
+        updated_by: ''
+      },
       files: [],
       links: [],
       form: {
         _id: '',
-        publicationid: '',
+        activityid: '',
         description: '',
         isDelivery: true,
         created_at: '',
@@ -114,13 +119,16 @@ export default {
 
   computed: {
     formTitle () {
-      return this.form._id
+      return this.activity.delivery
         ? 'Editar entrega'
         : 'Crear entrega'
     },
-    isDisabled () {
+    isVisible () {
       if (this.files.length === 0 && this.links.length === 0 &&
-      this.form.description === '') { return true } else { return false }
+      this.form.description === '') { return false } else { return true }
+    },
+    downloadUrl () {
+      return `${fileUrl}download`
     }
   },
 
@@ -135,19 +143,38 @@ export default {
   },
 
   beforeMount () {
+    this.moduleSlug = 'Entregas'
     this.getData()
   },
 
   methods: {
-    async getData () {
+    getData () {
+      if (this.$ability.can('read', 'Entregas')) {
+        this.getActivityDeliveries()
+      } else {
+        this.getActivityDelivery()
+      }
+    },
+    async getActivityDeliveries () {
       try {
         this.activity = await this.$axios.$get(
-          `${activityUrl}${this.$route.params.id}`)
+          `${activityUrl}deliveries/${this.$route.params.id}`)
+      } catch (err) {
+        this.showSnackbar(err)
+      }
+    },
+    async getActivityDelivery () {
+      try {
+        this.activity = await this.$axios.$get(
+          `${activityUrl}delivery/${this.$route.params.id}`)
+        this.form.activityid = this.$route.params.id
       } catch (err) {
         this.showSnackbar(err)
       }
     },
     getFormData () {
+      delete this.form.links
+      delete this.form.files
       const formData = new FormData()
       for (const key of Object.keys(this.form)) {
         formData.append(key, this.form[key])
@@ -158,32 +185,35 @@ export default {
         }
       }
       if (this.links.length) {
-        formData.append('links', this.links)
+        for (const link of this.links) {
+          formData.append('links', JSON.stringify(link))
+        }
       }
       return formData
     },
-    async saveComment () {
+    async saveDelivery () {
       try {
         if (!this.$refs.form.validate()) { return }
         let message
         if (this.form._id) {
           ({ message } = await this.$axios.$patch(
-                `${commentUrl}${this.form._id}`, this.form))
+                `${deliveryUrl}${this.form._id}`, this.getFormData()))
         } else {
-          this.form.publicationid = this.activity._id;
-          ({ message } = await this.$axios.$post(commentUrl,
+          ({ message } = await this.$axios.$post(deliveryUrl,
             this.getFormData()))
         }
         this.getData()
+        this.$refs.form.reset()
         this.dialogEdit = false
+        this.links = this.files = []
         this.showSnackbar(message)
       } catch (err) {
         this.showSnackbar(err)
       }
     },
-    async getComment (item) {
+    async getDelivery (item) {
       try {
-        this.form = await this.$axios.$get(`${commentUrl}${item._id}`)
+        this.form = await this.$axios.$get(`${deliveryUrl}${item._id}`)
         this.dialogEdit = true
       } catch (err) {
         this.showSnackbar(err)
@@ -191,19 +221,19 @@ export default {
     },
     async showDelete (item) {
       try {
-        this.form = (await this.$axios.$get(`${commentUrl}${item._id}`))
-        this.showDeleteComment = true
+        this.form = (await this.$axios.$get(`${deliveryUrl}${item._id}`))
+        this.showDeleteDelivery = true
       } catch (err) {
         this.showSnackbar(err)
       }
     },
-    async deleteComment () {
+    async deleteDelivery () {
       try {
         this.form.status = false
         const { message } = (await this.$axios.$patch(
-          `${commentUrl}${this.form._id}`, this.form))
+          `${deliveryUrl}${this.form._id}`, this.form))
         this.getData()
-        this.showDeleteComment = false
+        this.showDeleteDelivery = false
         this.showSnackbar(message)
       } catch (err) {
         this.showSnackbar(err)
@@ -214,14 +244,7 @@ export default {
         item.username === this.$store.state.session.username
     },
     addFiles (files) { this.files = files },
-    addLinks (links) { this.links = links },
-    formTitleDelivery () {
-      if (this.activity.comments && this.activity.comments.length) {
-        return 'Editar entrega'
-      } else {
-        return 'Crear entrega'
-      }
-    }
+    addLinks (links) { this.links = links }
   }
 }
 </script>

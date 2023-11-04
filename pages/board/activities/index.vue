@@ -60,6 +60,7 @@ export default {
   },
 
   beforeMount () {
+    this.moduleSlug = 'Actividades'
     this.getData()
   },
 

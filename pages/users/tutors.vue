@@ -174,6 +174,7 @@ export default {
   },
 
   beforeMount () {
+    this.moduleSlug = 'Acudientes'
   },
 
   methods: {

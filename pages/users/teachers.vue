@@ -134,6 +134,7 @@ export default {
   },
 
   beforeMount () {
+    this.moduleSlug = 'Profesores'
   },
 
   methods: {

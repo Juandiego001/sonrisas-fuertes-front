@@ -198,6 +198,7 @@ export default {
   },
 
   beforeMount () {
+    this.moduleSlug = 'Estudiantes'
   },
 
   methods: {
