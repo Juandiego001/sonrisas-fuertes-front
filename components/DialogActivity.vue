@@ -134,6 +134,8 @@ export default {
         this.files = []
         this.links = []
       } else {
+        // eslint-disable-next-line no-console
+        console.log(this.activity)
         this.form = this.$clone(this.activity)
         this.$refs.form && this.$refs.form.resetValidation()
       }

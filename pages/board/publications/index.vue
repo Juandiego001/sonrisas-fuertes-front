@@ -62,10 +62,6 @@ export default {
 
   beforeMount () {
     this.moduleSlug = 'Publicaciones'
-    // eslint-disable-next-line no-console
-    console.log(this.moduleSlug)
-    // eslint-disable-next-line no-console
-    console.log('can read publicaciones', this.$ability.can('read', 'Publicaciones'))
     this.getData()
   },
 

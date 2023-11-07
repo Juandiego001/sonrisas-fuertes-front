@@ -2,8 +2,7 @@
 v-dialog(:value="dialog" max-width="600px" scrollable
 :fullscreen="$vuetify.breakpoint.smAndDown" @input="ev => $emit('input', ev)")
   v-card(flat :tile="$vuetify.breakpoint.smAndDown")
-    v-card-title.primary.white--text
-      | {{ formTitle }}
+    v-card-title.primary.white--text Editar entrega
       v-spacer
       v-btn(color="primary" fab small depressed @click="dialogEdit=false")
         v-icon mdi-close
@@ -71,10 +70,6 @@ export default {
       default: () => {},
       type: Function
     },
-    activityid: {
-      default: '',
-      type: String
-    },
     delivery: {
       default: () => ({
         _id: '',
@@ -110,11 +105,6 @@ export default {
   },
 
   computed: {
-    formTitle () {
-      return this.delivery._id
-        ? 'Editar entrega'
-        : 'Crear entrega'
-    },
     downloadUrl () {
       return `${fileUrl}download`
     }
@@ -142,7 +132,7 @@ export default {
   },
 
   methods: {
-    async getdelivery () {
+    async getDelivery () {
       try {
         this.form = (await this.$axios.$get(`${deliveryUrl}${this.form._id}`))
       } catch (err) {
@@ -162,22 +152,17 @@ export default {
         }
       }
       if (this.links.length) {
-        formData.append('links', this.links)
+        for (const link of this.links) {
+          formData.append('links', JSON.stringify(link))
+        }
       }
       return formData
     },
     async saveDelivery () {
       try {
         if (!this.$refs.form.validate()) { return }
-        let message
-        if (this.form._id) {
-          ({ message } = await this.$axios.$patch(
-            `${deliveryUrl}${this.form._id}`, this.getFormData()))
-        } else {
-          this.form.activityid = this.activityid;
-          ({ message } = await this.$axios.$post(deliveryUrl,
-            this.getFormData()))
-        }
+        const { message } = await this.$axios.$patch(
+          `${deliveryUrl}${this.form._id}`, this.getFormData())
         this.getData()
         this.dialogEdit = false
         this.showSnackbar(message)

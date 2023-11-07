@@ -8,5 +8,6 @@ export default {
   tutors: 'Acudientes',
   students: 'Estudiantes',
   activities: 'Actividades',
-  materials: 'Materiales'
+  materials: 'Materiales',
+  profiles: 'Perfiles'
 }

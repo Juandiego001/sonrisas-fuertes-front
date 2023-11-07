@@ -1,6 +1,6 @@
 <template lang="pug">
 v-container
-  v-card.ms-2.mt-2(elevation="0" max-width="700px")
+  v-card(elevation="0" max-width="700px")
     v-card-title
       v-row(align="center" no-gutters)
         v-col(cols="2" sm="1" md="1")
@@ -15,7 +15,7 @@ v-container
         v-col(cols="12")
           pre.body-2 {{ publication.description }}
       v-divider.mt-5
-      card-comment(v-for="item in publication.comments" :item="item"
+      card-comment(v-for="item in publication.comments" :comment="item"
       :getData="getData" :getComment="getComment" :key="`comment.${item._id}`")
 
   dialog-comment(v-model="dialogEdit" :getData="getData"
@@ -55,7 +55,23 @@ export default {
     }
   },
 
+  watch: {
+    dialogEdit (value) {
+      if (!value) {
+        this.form = {
+          _id: '',
+          title: '',
+          description: '',
+          created_at: '',
+          updated_by: '',
+          updated_at: ''
+        }
+      }
+    }
+  },
+
   beforeMount () {
+    this.moduleSlug = 'Comentarios'
     this.getData()
   },
 

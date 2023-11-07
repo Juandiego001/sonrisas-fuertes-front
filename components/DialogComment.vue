@@ -29,7 +29,8 @@ v-dialog(:value="dialog" max-width="600px" scrollable
               v-col(cols="12" v-for="file, index in form.files"
               :key="`act.file${index}`")
                 v-icon.primary--text.me-1 mdi-upload
-                a.me-2(:href="`${downloadUrl}/${file._id}`" target="_blank")
+                a.me-2(:href="`${downloadUrl}/${file._id}`"
+                target="_blank")
                   | {{ file.real_name }}
                 v-btn(icon color="error" @click="showDelete(file, 'file')")
                   v-icon mdi-trash-can
@@ -37,9 +38,10 @@ v-dialog(:value="dialog" max-width="600px" scrollable
               v-col(cols="12" v-for="link, index in form.links"
               :key="`act.link${index}`")
                 v-icon.primary--text.me-1 mdi-attachment
-                a.me-2(:href="link.url") {{ link.shortcut }}
+                a.me-2(:href="link.url")
+                  | {{ link.shortcut }}
                 v-btn(icon color="error" @click="showDelete(link, 'link')")
-                  v-icon mdi-trash-can
+                  v-icon() mdi-trash-can
         v-card-actions
           v-spacer
           v-btn(color="primary" type="submit") Guardar
@@ -162,7 +164,9 @@ export default {
         }
       }
       if (this.links.length) {
-        formData.append('links', this.links)
+        for (const link of this.links) {
+          formData.append('links', JSON.stringify(link))
+        }
       }
       return formData
     },

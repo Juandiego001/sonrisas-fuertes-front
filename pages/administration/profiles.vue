@@ -3,8 +3,10 @@ v-container(fluid)
   v-data-table(:headers="headers" :items="items" :server-items-length="total"
     :options.sync="options")
     template(#item.options="{ item }")
-      v-btn.mr-2(depressed @click="getPermissions(item)")
+      v-btn(icon @click="getProfile(item)")
         v-icon.primary--text mdi-shield-account-variant-outline
+    template(#item.status="{ item }")
+      | {{ item.status ? 'Activo' : 'Inactivo' }}
 
   v-dialog(v-model="dialogEdit" max-width="600px"
   :fullscreen="$vuetify.breakpoint.smAndDown" scrollable)
@@ -30,7 +32,8 @@ v-container(fluid)
           v-spacer
           v-btn(color="primary" depressed type="submit") Guardar
 
-  dialog-permissions(v-model="dialogPermissions" :profileid="profileid")
+  dialog-permissions(v-model="dialogPermissions" :profile="form"
+  :getProfile="getProfile")
 </template>
 
 <script>
@@ -48,9 +51,9 @@ export default {
       total: -1,
       items: [],
       form: {
-        name: ''
+        name: '',
+        permissions: []
       },
-      profileid: '',
       dialogPermissions: false
     }
   },
@@ -58,9 +61,9 @@ export default {
   computed: {
     headers () {
       return [
-        { text: 'Perfil', value: 'name' },
-        { text: 'Estado', value: 'status' },
-        { text: 'Opciones', value: 'options' }
+        { text: 'Perfil', align: 'center', value: 'name' },
+        { text: 'Estado', align: 'center', value: 'status' },
+        { text: 'Opciones', align: 'center', value: 'options' }
       ]
     }
   },
@@ -88,15 +91,13 @@ export default {
     },
     async getProfile (item) {
       try {
-        const data = await this.$axios.$get(`${profileUrl}${item._id}`)
-        this.form = data
+        this.form = await this.$axios.$get(`${profileUrl}${item._id}`)
+        // eslint-disable-next-line no-console
+        console.log('form**************', this.form)
+        this.dialogPermissions = true
       } catch (err) {
         this.showSnackbar(err)
       }
-    },
-    getPermissions (item) {
-      this.profileid = item._id
-      this.dialogPermissions = true
     }
   }
 }

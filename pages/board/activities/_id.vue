@@ -1,6 +1,6 @@
 <template lang="pug">
 v-container
-  v-row.mt-3
+  v-row
     v-col(cols="12" md="6")
       v-card(elevation="0" max-width="700px")
         v-card-title
@@ -17,6 +17,12 @@ v-container
             v-col(cols="12")
               pre.body-2 {{ activity.description }}
 
+          template(v-if="canSearch")
+            v-divider.mt-5
+            card-delivery(v-for="item in activity.deliveries" :delivery="item"
+            :getData="getData" :getDelivery="getDelivery"
+            :key="`delivery.${item._id}`")
+
     v-col(v-if="!canSearch" cols="12" md="6")
       v-card(max-width="400px")
         v-card-title.primary--text {{ formTitle }}
@@ -26,14 +32,13 @@ v-container
           v-row
             v-col(cols="12")
               .black--text {{ activity.delivery.description }}
-            v-col.d-flex.align-center(cols="12"
-              v-for="file, index in activity.delivery.files"
-              :key="`attachment.${index}`")
-                v-icon.primary--text.me-1 mdi-upload
-                a(:href="`${downloadUrl}/${file._id}`" target="_blank")
-                  | {{ file.real_name }}
-            v-col(cols="12"
-            v-for="link, index in activity.delivery.links")
+            v-col(cols="12" v-for="file, index in activity.delivery.files"
+            :key="`del.file.${index}`")
+              v-icon.primary--text.me-1 mdi-upload
+              a(:href="`${downloadUrl}/${file._id}`" target="_blank")
+                | {{ file.real_name }}
+            v-col(cols="12" v-for="link, index in activity.delivery.links"
+            :key="`del.link.${index}`")
               v-icon.primary--text.me-1 mdi-attachment
               a(:href="link.url" target="_blank") {{ link.url }}
             v-col.d-flex(cols="12")
@@ -75,8 +80,8 @@ v-container
 
     dialog-files(v-model="showFiles" :addFiles="addFiles")
     dialog-links(v-model="showLinks" :addLinks="addLinks")
-    dialog-delivery(v-model="dialogEdit" :activityid="activity.id"
-    :getData="getData" :comment="form")
+    dialog-delivery(v-model="dialogEdit" :getData="getData"
+    :delivery="form")
     dialog-delete(v-model="showDeleteDelivery" text="entrega"
     :doDelete="deleteDelivery")
 </template>

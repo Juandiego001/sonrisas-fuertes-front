@@ -11,7 +11,7 @@ v-container.pt-0.align-center
       :itemsPerPage.sync="itemsPerPage"
       :footer-props="{itemsPerPageOptions: [3, 5, 7]}")
         template(#item="{ item }")
-          card-activity(:item="item" :getData="getData"
+          card-activity(:activity="item" :getData="getData"
           :getActivity="getActivity" :key="`activity.${item._id}`")
 
   dialog-activity(v-model="dialogEdit" :activity="form" :getData="getData")

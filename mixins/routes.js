@@ -22,7 +22,7 @@ export const studentUrl = '/api/student/'
 export const tutorUrl = '/api/tutor/'
 
 // Permissions
-export const permissionUrl = '/api/permission'
+export const permissionUrl = '/api/permission/'
 
 // Profiles
 export const profileUrl = '/api/profile/'
