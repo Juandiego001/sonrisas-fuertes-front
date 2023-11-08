@@ -26,26 +26,29 @@ v-container(fluid)
         v-window(v-model="onboarding")
           v-window-item
             v-card(flat)
-              v-card-text.my-3
+              v-card-text
                 v-row(dense)
+                  v-col(cols="12" md="6")
+                    v-select(v-model="create" label="Registrar como"
+                    :items="createOptions")
                   v-col.primary--text(cols="12" md="12")
-                    | Información del estudiante
+                    | Información del {{ create.toLowerCase() }}
                   v-col(cols="12" md="6")
                     text-field(v-model="form.name" label="Nombre"
                     :rules="generalRules")
                   v-col(cols="12" md="6")
                     text-field(v-model="form.lastname" label="Apellido"
                     :rules="generalRules")
-                  v-col(cols="12" md="6")
+                  v-col(cols="12" :md="create == 'Estudiante' ? 6 : 12")
                     text-field(v-model="form.document" label="Cédula"
                     :rules="generalRules")
-                  v-col(cols="12" md="6")
+                  v-col(v-if="create == 'Estudiante'" cols="12" md="6")
                     text-field(v-model="form.username" label="Usuario"
                     :rules="generalRules")
-                  v-col(cols="12" md="12")
+                  v-col(v-if="create == 'Estudiante'" cols="12" md="12")
                     text-field(v-model="form.email" label="Correo"
                     :rules="generalRules")
-                  v-col(cols="12" md="12")
+                  v-col(v-if="create == 'Estudiante'" cols="12" md="12")
                     text-field-password(v-model="form.password" label="Contraseña"
                     :rules="passwordEmptyRules")
                   v-col(cols="12" md="12")
@@ -57,7 +60,7 @@ v-container(fluid)
               v-card-text.my-3
                 v-row(dense)
                   v-col.primary--text(cols="12" md="12")
-                    | Información del estudiante
+                    | Información del {{ create.toLowerCase() }}
                   v-col(cols="12" md="6")
                     text-field(v-model="form.hospital"
                     label="Clínica de atención" :rules="[]")
@@ -81,7 +84,7 @@ v-container(fluid)
               v-card-text.my-3
                 v-row(dense)
                   v-col.primary--text(cols="12" md="12")
-                    | Información del estudiante
+                    | Información del {{ create.toLowerCase() }}
                   v-col(cols="12" md="12")
                     v-select(v-model="form.tutorsid" filled dense multiple
                     small-chips :items="tutors" label="Acudientes"
@@ -128,6 +131,7 @@ export default {
       items: [],
       tutors: [],
       onboarding: 0,
+      create: 'Estudiante',
       form: {
         _id: '',
         name: '',
@@ -175,11 +179,14 @@ export default {
     },
     formTitle () {
       return this.form._id
-        ? 'Editar estudiante'
-        : 'Crear estudiante'
+        ? `Editar ${this.create.toLocaleLowerCase()}`
+        : `Crear ${this.create.toLocaleLowerCase()}`
     },
     genders () {
       return ['Niño', 'Niña']
+    },
+    createOptions () {
+      return ['Estudiante', 'Paciente']
     }
   },
 
@@ -190,6 +197,7 @@ export default {
         this.$refs.form.reset()
         this.form._id = ''
         this.onboarding = 0
+        this.create = 'Estudiante'
       } else {
         this.getTutors()
         this.$refs.form && this.$refs.form.resetValidation()
@@ -231,8 +239,6 @@ export default {
     async getStudent (item) {
       try {
         this.form = (await this.$axios.$get(`${studentUrl}${item._id}`))
-        // eslint-disable-next-line no-console
-        console.log('form*******', this.form)
         this.dialogEdit = true
       } catch (err) {
         this.showSnackbar(err)
