@@ -3,15 +3,17 @@ v-container(fluid)
   v-data-table(:headers="headers" :items="items" :server-items-length="total"
   :options.sync="options" :search="search")
     template(#item.options="{ item }")
-      v-btn.mr-2(color="success" depressed icon @click="getStudent(item)")
+      v-btn.mr-2(color="success" depressed icon @click="getUser(item)")
         v-icon mdi-pencil
       v-btn.mr-2(v-if="item.status === 'PENDING'" depressed icon
         @click="resendLink(item)")
         v-icon mdi-email-fast
+    template(#item.status="{ item }")
+      | {{ getUserStatus(item.status) }}
 
   v-dialog(v-model="dialogEdit" max-width="600px"
     :fullscreen="$vuetify.breakpoint.smAndDown" scrollable)
-    v-form(ref="form" @submit.prevent="saveStudent")
+    v-form(ref="form" @submit.prevent="saveUser")
       v-card(flat :tile="$vuetify.breakpoint.smAndDown")
         v-card-title.primary.white--text
           .me-2 {{ formTitle }}
@@ -41,13 +43,13 @@ v-container(fluid)
                     :rules="generalRules")
                   v-col(cols="12" :md="create == 'Estudiante' ? 6 : 12")
                     text-field(v-model="form.document" label="Cédula"
-                    :rules="generalRules")
+                    :rules="documentRules")
                   v-col(v-if="create == 'Estudiante'" cols="12" md="6")
                     text-field(v-model="form.username" label="Usuario"
-                    :rules="generalRules")
+                    :rules="usernameRules")
                   v-col(v-if="create == 'Estudiante'" cols="12" md="12")
                     text-field(v-model="form.email" label="Correo"
-                    :rules="generalRules")
+                    :rules="emailRules")
                   v-col(v-if="create == 'Estudiante'" cols="12" md="12")
                     text-field-password(v-model="form.password" label="Contraseña"
                     :rules="passwordEmptyRules")
@@ -71,8 +73,16 @@ v-container(fluid)
                     text-field(v-model="form.eps"
                     label="EPS" :rules="[]")
                   v-col(cols="12" md="6")
-                    text-field(v-model="form.born_at"
-                    label="Fecha de nacimiento" :rules="[]")
+                    v-menu(ref="menu" v-model="menu" offset-y min-width="auto"
+                    :close-on-content-click="false"
+                    transition="scale-transition")
+                      template(#activator="{ on, attrs }")
+                        v-text-field(v-model="form.born_at" readonly
+                        label="Fecha de nacimiento" v-bind="attrs" v-on="on"
+                        prepend-icon="mdi-calendar")
+                      v-date-picker(v-model="form.born_at" min="1950-01-01"
+                      :active-picker.sync="activePicker"
+                      @change="date => $refs.menu.save(date)" :max="maxDate")
                   v-col(cols="12" md="6")
                     v-select(v-model="form.gender" filled dense :items="genders"
                     label="Género" hide-details="auto")
@@ -117,12 +127,16 @@ v-container(fluid)
 </template>
 
 <script>
-import passwordsEmptyRules from '../../mixins/form-rules/passwordsEmpty'
+import passwordEmptyRules from '~/mixins/form-rules/passwordsEmpty'
 import generalRules from '~/mixins/form-rules/general-rules'
-import { studentUrl, tutorUrl } from '~/mixins/routes'
+import emailRules from '~/mixins/form-rules/emails'
+import documentRules from '~/mixins/form-rules/documents'
+import usernameRules from '~/mixins/form-rules/usernames'
+import { studentUrl, patientUrl, tutorUrl } from '~/mixins/routes'
 
 export default {
-  mixins: [generalRules, passwordsEmptyRules],
+  mixins: [generalRules, passwordEmptyRules, emailRules, documentRules,
+    usernameRules],
 
   data () {
     return {
@@ -132,6 +146,8 @@ export default {
       tutors: [],
       onboarding: 0,
       create: 'Estudiante',
+      menu: false,
+      activePicker: null,
       form: {
         _id: '',
         name: '',
@@ -154,8 +170,7 @@ export default {
     headers () {
       return [
         { text: 'Estudiante', value: 'fullname' },
-        { text: 'Usuario', value: 'username' },
-        { text: 'Email', value: 'email' },
+        { text: 'Cédula', value: 'document' },
         { text: 'Estado', value: 'status' },
         { text: 'Opciones', value: 'options' }
       ]
@@ -187,6 +202,11 @@ export default {
     },
     createOptions () {
       return ['Estudiante', 'Paciente']
+    },
+    maxDate () {
+      return (new Date(Date.now() -
+        (new Date()).getTimezoneOffset() * 60000))
+        .toISOString().substring(0, 10)
     }
   },
 
@@ -202,6 +222,9 @@ export default {
         this.getTutors()
         this.$refs.form && this.$refs.form.resetValidation()
       }
+    },
+    menu (value) {
+      value && setTimeout(() => (this.activePicker = 'YEAR'))
     }
   },
 
@@ -218,6 +241,13 @@ export default {
         this.showSnackbar(err)
       }
     },
+    saveUser () {
+      if (this.create === 'Estudiante') {
+        this.saveStudent()
+      } else {
+        this.savePatient()
+      }
+    },
     async saveStudent () {
       try {
         if (!this.$refs.form.validate()) { return }
@@ -228,7 +258,6 @@ export default {
         } else {
           ({ message } = await this.$axios.$post(studentUrl, this.form))
         }
-
         this.getData()
         this.dialogEdit = false
         this.showSnackbar(message)
@@ -236,9 +265,42 @@ export default {
         this.showSnackbar(err)
       }
     },
+    async savePatient () {
+      try {
+        if (!this.$refs.form.validate()) { return }
+        let message
+        if (this.form._id) {
+          ({ message } = await this.$axios.$patch(
+            `${patientUrl}${this.form._id}`, this.form))
+        } else {
+          ({ message } = await this.$axios.$post(patientUrl, this.form))
+        }
+        this.getData()
+        this.dialogEdit = false
+        this.showSnackbar(message)
+      } catch (err) {
+        this.showSnackbar(err)
+      }
+    },
+    getUser (item) {
+      if (item.username) {
+        this.getStudent(item)
+      } else {
+        this.create = 'Paciente'
+        this.getPatient(item)
+      }
+    },
     async getStudent (item) {
       try {
         this.form = (await this.$axios.$get(`${studentUrl}${item._id}`))
+        this.dialogEdit = true
+      } catch (err) {
+        this.showSnackbar(err)
+      }
+    },
+    async getPatient (item) {
+      try {
+        this.form = (await this.$axios.$get(`${patientUrl}${item._id}`))
         this.dialogEdit = true
       } catch (err) {
         this.showSnackbar(err)
@@ -250,6 +312,11 @@ export default {
       } catch (err) {
         this.showSnackbar(err)
       }
+    },
+    getUserStatus (status) {
+      return status === 'ACTIVE'
+        ? 'Activo'
+        : status === 'INACTIVE' ? 'Inactivo' : 'Pendiente de activación'
     },
     doSearch (value) {
       this.search = value

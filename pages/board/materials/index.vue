@@ -7,6 +7,8 @@ v-container(fluid)
         v-icon mdi-pencil
       v-btn.primary--text(icon @click="getFiles(item)")
         v-icon mdi-file-multiple
+    template(#item.status="{ item }")
+      | {{ item.status ? 'Activo' : 'Inactivo' }}
 
   v-dialog(v-model="dialogEdit" max-width="600px")
     v-card
@@ -41,7 +43,7 @@ v-container(fluid)
         v-spacer
         v-btn.primary.white--text(icon @click="dialogFiles=false")
           v-icon mdi-close
-      v-card-text
+      v-card-text.mt-3
         v-form(ref="formFile" @submit.prevent="saveFile")
           v-row(align="center")
             v-col(cols="12" md="10")
@@ -60,7 +62,7 @@ v-container(fluid)
 </template>
 
 <script>
-import { folderUrl } from '~/mixins/routes'
+import { folderUrl, fileUrl } from '~/mixins/routes'
 import generalRules from '~/mixins/form-rules/general-rules'
 
 export default {
@@ -109,14 +111,17 @@ export default {
     options: {
       handler () {
         this.getData()
+      },
+      file (value) {
+        if (!value) {
+          this.$refs.formFiles.resetValidation()
+        }
       }
     },
     dialogEdit (value) {
       if (!value) {
         this.$refs.form.resetValidation()
         this.$refs.form.reset()
-        this.$refs.formFile && this.$refs.formFile.resetValidation()
-        this.$refs.formFile && this.$refs.formFile.reset()
       } else {
         this.$refs.form && this.$refs.form.resetValidation()
         this.$refs.formFile && this.$refs.formFile.resetValidation()
@@ -169,7 +174,7 @@ export default {
       try {
         this.folderid = item._id
         this.files = (await this.$axios.$get(
-          `${folderUrl}files/${item._id}`)).items
+          `${folderUrl}folder/files/${item._id}`)).items
         this.dialogFiles = true
       } catch (err) {
         this.showSnackbar(err)
@@ -179,9 +184,9 @@ export default {
       try {
         if (!this.$refs.formFile.validate()) { return }
         const formData = new FormData()
+        formData.append('folderid', this.folderid)
         formData.append('file', this.file)
-        const { message } = await this.$axios.$put(
-          `${folderUrl}files/${this.folderid}`, formData)
+        const { message } = await this.$axios.$put(fileUrl, formData)
         this.getFiles({ _id: this.folderid })
         this.file = null
         this.showSnackbar(message)

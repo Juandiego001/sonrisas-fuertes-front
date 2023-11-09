@@ -31,13 +31,13 @@ v-container(fluid)
               :rules="generalRules")
             v-col(cols="12" md="6")
               text-field(v-model="form.document" label="Cédula"
-              :rules="generalRules")
+              :rules="documentRules")
             v-col(cols="12" md="6")
               text-field(v-model="form.username" label="Usuario"
-              :rules="generalRules")
+              :rules="usernameRules")
             v-col(cols="12" md="12")
               text-field(v-model="form.email" label="Correo"
-              :rules="generalRules")
+              :rules="emailRules")
             v-col(cols="12" md="12")
               text-field-password(v-model="form.password" label="Contraseña"
               :rules="passwordEmptyRules")
@@ -61,12 +61,16 @@ v-container(fluid)
 </template>
 
 <script>
+import passwordEmptyRules from '../../mixins/form-rules/passwordsEmpty'
 import generalRules from '~/mixins/form-rules/general-rules'
-import passwordEmptyRules from '~/mixins/form-rules/passwordsEmpty'
+import emailRules from '~/mixins/form-rules/emails'
+import usernameRules from '~/mixins/form-rules/usernames'
+import documentRules from '~/mixins/form-rules/documents'
 import { resetPasswordUrl, teacherUrl } from '~/mixins/routes'
 
 export default {
-  mixins: [generalRules, passwordEmptyRules],
+  mixins: [generalRules, passwordEmptyRules, emailRules, documentRules,
+    usernameRules],
 
   data () {
     return {
