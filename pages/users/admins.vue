@@ -66,11 +66,12 @@ import generalRules from '~/mixins/form-rules/general-rules'
 import emailRules from '~/mixins/form-rules/emails'
 import documentRules from '~/mixins/form-rules/documents'
 import usernameRules from '~/mixins/form-rules/usernames'
+import fileRules from '~/mixins/form-rules/files'
 import { resetPasswordUrl, adminUrl } from '~/mixins/routes'
 
 export default {
   mixins: [generalRules, passwordEmptyRules, emailRules, documentRules,
-    usernameRules],
+    usernameRules, fileRules],
 
   data () {
     return {
@@ -139,6 +140,7 @@ export default {
 
   beforeMount () {
     this.moduleSlug = 'Administradores'
+    this.canViewPage()
   },
 
   methods: {

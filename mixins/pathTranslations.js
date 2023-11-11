@@ -8,6 +8,7 @@ export default {
   tutors: 'Acudientes',
   students: 'Estudiantes',
   activities: 'Actividades',
-  materials: 'Materiales',
-  profiles: 'Perfiles'
+  folders: 'Carpetas',
+  profiles: 'Perfiles',
+  reports: 'Reportes'
 }

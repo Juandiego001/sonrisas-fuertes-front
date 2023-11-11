@@ -17,13 +17,13 @@ v-container
             v-col(cols="12")
               pre.body-2 {{ activity.description }}
 
-          template(v-if="canSearch")
+          template(v-if="canSearchDelivery")
             v-divider.mt-5
             card-delivery(v-for="item in activity.deliveries" :delivery="item"
             :getData="getData" :getDelivery="getDelivery"
             :key="`delivery.${item._id}`")
 
-    v-col(v-if="!canSearch" cols="12" md="6")
+    v-col(v-if="!canSearchDelivery" cols="12" md="6")
       v-card(max-width="400px")
         v-card-title.primary--text {{ formTitle }}
 
@@ -134,6 +134,18 @@ export default {
     },
     downloadUrl () {
       return `${fileUrl}download`
+    },
+    /*
+      Esta computed se hace debido a que el canSearch del script global
+      ubicado en el mixin, se utiliza únicamente para dar visibilidad al ícono
+      de la lupa. Por lo que aquí, lo que se hace es determinar si ingresa
+      un usuario con permisos para ver las entregas. Generalmente sería un
+      Admin o un Profesor, en este caso, si es uno de los dos,
+      nada más se les mostraría las entregas realizadas y no se les habilitaría
+      la opción de hacer una entrega.
+    */
+    canSearchDelivery () {
+      return this.$ability.can('read', 'Entregas')
     }
   },
 
@@ -143,6 +155,19 @@ export default {
         this.form._id = ''
         this.$refs.form && this.$refs.form.resetValidation()
         this.$refs.form && this.$refs.form.reset()
+      }
+    },
+    showDeleteDelivery (value) {
+      if (!value) {
+        this.form = {
+          _id: '',
+          activityid: '',
+          description: '',
+          isDelivery: true,
+          created_at: '',
+          updated_at: '',
+          updated_by: ''
+        }
       }
     }
   },
@@ -235,18 +260,14 @@ export default {
     async deleteDelivery () {
       try {
         this.form.status = false
-        const { message } = (await this.$axios.$patch(
-          `${deliveryUrl}${this.form._id}`, this.form))
+        const { message } = await this.$axios.$delete(
+          `${deliveryUrl}${this.form._id}`)
         this.getData()
         this.showDeleteDelivery = false
         this.showSnackbar(message)
       } catch (err) {
         this.showSnackbar(err)
       }
-    },
-    canEditComment (item) {
-      return this.$store.state.session.profiles.includes('Administrador') ||
-        item.username === this.$store.state.session.username
     },
     addFiles (files) { this.files = files },
     addLinks (links) { this.links = links }

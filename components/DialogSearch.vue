@@ -10,8 +10,9 @@ v-dialog(:value="dialog" max-width="600px" @input="ev => $emit('input', ev)"
       v-card-text.mt-3
         v-row
           v-col(cols="12")
-            v-text-field(append-icon="mdi-magnify" label="Buscar"
-            filled single-line hide-details v-model="search" autofocus dense)
+            v-text-field(prepend-icon="mdi-magnify" label="Buscar"
+            filled single-line hide-details v-model="search" autofocus dense
+            clearable @click:clear="resetSearch")
       v-card-actions
         v-spacer
         v-btn(color="primary" depressed type="submit") Buscar
@@ -37,6 +38,13 @@ export default {
   data () {
     return {
       search: ''
+    }
+  },
+
+  methods: {
+    resetSearch () {
+      this.search = ''
+      this.doSearch()
     }
   }
 }

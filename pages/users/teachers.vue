@@ -139,6 +139,7 @@ export default {
 
   beforeMount () {
     this.moduleSlug = 'Profesores'
+    this.canViewPage()
   },
 
   methods: {

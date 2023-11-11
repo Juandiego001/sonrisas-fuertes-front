@@ -17,7 +17,8 @@ v-dialog(:value="dialog" max-width="700px" scrollable
             :rules="generalRules")
           v-col(cols="12" md="12")
             v-textarea(v-model="form.description" rows="2"
-            label="Descripción" auto-grow hide-details="auto")
+            label="Descripción" auto-grow hide-details="auto"
+            :rules="generalRules")
           v-col.d-flex.mt-3(cols="12" md="12")
             v-badge.me-2(:content="files.length" color="primary"
             :value="files.length" overlap)
@@ -134,8 +135,6 @@ export default {
         this.files = []
         this.links = []
       } else {
-        // eslint-disable-next-line no-console
-        console.log(this.activity)
         this.form = this.$clone(this.activity)
         this.$refs.form && this.$refs.form.resetValidation()
       }

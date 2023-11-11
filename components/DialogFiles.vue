@@ -13,17 +13,18 @@ v-dialog(:value="dialog" max-width="600px" scrollable
           v-col.primary--text(cols="12") Adjuntar archivos
           v-col(cols="12")
             v-file-input(v-model="files" label="Archivos"
-            chips small-chips multiple :rules="generalRules")
+            chips small-chips multiple :rules="fileRules")
         v-card-actions.pe-0
           v-spacer
           v-btn(color="primary" type="submit") Guardar
 </template>
 
 <script>
+import fileRules from '../mixins/form-rules/files'
 import generalRules from '~/mixins/form-rules/general-rules'
 
 export default {
-  mixins: [generalRules],
+  mixins: [generalRules, fileRules],
   model: {
     prop: 'dialog',
     event: 'input'
@@ -49,8 +50,8 @@ export default {
   watch: {
     dialog (value) {
       if (!value) {
-        this.$refs.form && this.$refs.form.reset()
-        this.$refs.form && this.$refs.form.resetValidation()
+        this.$refs.form.reset()
+        this.$refs.form.resetValidation()
       }
     }
   },

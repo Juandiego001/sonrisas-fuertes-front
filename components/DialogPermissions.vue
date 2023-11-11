@@ -10,7 +10,7 @@ v-dialog(:value="dialog" max-width="700px"
     v-card-text.mt-3
       v-data-table(:headers="headers" dense :items="profile.permissions"
       :items-per-page="15" :server-items-length="total"
-      :footer-props="{itemsPerPageOptions:[5,10,15,20]}")
+      :footer-props="{itemsPerPageOptions:[5, 7, 10]}")
         template(#top)
           v-text-field.mb-3(v-model="search" placeholder="Buscar"
           append-icon="mdi-magnify" filled dense hide-details)
@@ -70,7 +70,8 @@ export default {
         { text: 'Módulo', value: 'module' },
         { text: 'Leer', value: 'read', align: 'center' },
         { text: 'Crear', value: 'create', align: 'center' },
-        { text: 'Editar', value: 'update', align: 'center' }
+        { text: 'Editar', value: 'update', align: 'center' },
+        { text: 'Eliminar', value: 'delete', align: 'center' }
       ]
     }
   },

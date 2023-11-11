@@ -53,3 +53,6 @@ export const fileUrl = '/api/file/'
 
 // Links
 export const linkUrl = '/api/link/'
+
+// Reports
+export const reportUrl = '/api/report/'

@@ -96,7 +96,7 @@ export default {
       }
     },
     canEdit (item) {
-      return this.$store.state.session.profiles.includes('Administrador') ||
+      return this.$ability.can('update', 'Actividades') ||
         item.username === this.$store.state.session.username
     }
   }

@@ -230,6 +230,7 @@ export default {
 
   beforeMount () {
     this.moduleSlug = 'Estudiantes'
+    this.canViewPage()
   },
 
   methods: {

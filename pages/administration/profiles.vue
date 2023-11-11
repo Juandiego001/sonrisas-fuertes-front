@@ -58,6 +58,10 @@ export default {
     }
   },
 
+  head () {
+    return { title: 'Profiles' }
+  },
+
   computed: {
     headers () {
       return [
@@ -80,6 +84,11 @@ export default {
     }
   },
 
+  beforeMount () {
+    this.moduleSlug = 'Perfiles'
+    this.canViewPage()
+  },
+
   methods: {
     async getData () {
       try {
@@ -92,8 +101,6 @@ export default {
     async getProfile (item) {
       try {
         this.form = await this.$axios.$get(`${profileUrl}${item._id}`)
-        // eslint-disable-next-line no-console
-        console.log('form**************', this.form)
         this.dialogPermissions = true
       } catch (err) {
         this.showSnackbar(err)

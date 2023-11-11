@@ -2,6 +2,16 @@ import { mapMutations } from 'vuex'
 
 export default {
   computed: {
+    allowSearchIcon () {
+      return ['Publicaciones', 'Actividades', 'Comentarios',
+        'Carpetas', 'Perfiles', 'Administradores', 'Profesores', 'Acudientes',
+        'Estudiantes']
+    },
+    allowCreateIcon () {
+      return ['Publicaciones', 'Actividades', 'Comentarios',
+        'Carpetas', 'Administradores', 'Profesores', 'Acudientes',
+        'Estudiantes']
+    },
     dialogEdit: {
       get () { return this.$store.state.app.dialogEdit },
       ...mapMutations({ set: 'app/setDialogEdit' })
@@ -15,10 +25,11 @@ export default {
       ...mapMutations({ set: 'app/moduleSlug' })
     },
     canSearch () {
-      return this.$ability.can('read', this.moduleSlug)
+      return this.allowSearchIcon.includes(this.moduleSlug) &&
+        this.$ability.can('read', this.moduleSlug)
     },
     canCreate () {
-      return this.moduleSlug !== 'Entregas' &&
+      return this.allowCreateIcon.includes(this.moduleSlug) &&
         this.$ability.can('create', this.moduleSlug)
     }
   },
@@ -26,6 +37,11 @@ export default {
   methods: {
     ...mapMutations({
       showSnackbar: 'snackbar/show'
-    })
+    }),
+    canViewPage () {
+      if (!this.$ability.can('read', this.moduleSlug)) {
+        this.$router.push('/')
+      }
+    }
   }
 }

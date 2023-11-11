@@ -3,7 +3,7 @@ v-container(fluid)
   v-data-table(:headers="headers" :items="items"
   :options.sync="options" :search="search")
     template(#item.options="{ item }")
-      v-btn.success--text(icon @click="getFolder(item)")
+      v-btn.success--text(v-if="canUpdate" icon @click="getFolder(item)")
         v-icon mdi-pencil
       v-btn.primary--text(icon @click="getFiles(item)")
         v-icon mdi-file-multiple
@@ -13,7 +13,7 @@ v-container(fluid)
   v-dialog(v-model="dialogEdit" max-width="600px")
     v-card
       v-card-title.primary.white--text
-        | {{ form._id ? 'Editar carpeta' : 'Crear carpeta' }}
+        | {{ formTitle }}
         v-spacer
         v-btn.primary.white--text(icon @click="dialogEdit=false")
           v-icon mdi-close
@@ -44,29 +44,35 @@ v-container(fluid)
         v-btn.primary.white--text(icon @click="dialogFiles=false")
           v-icon mdi-close
       v-card-text.mt-3
-        v-form(ref="formFile" @submit.prevent="saveFile")
+        v-form(v-if="canCreateFiles"
+        ref="formFile" @submit.prevent="saveFile")
           v-row(align="center")
             v-col(cols="12" md="10")
-              v-file-input(v-model="file" label="Archivo"
-              :rules="generalRules")
+              v-file-input(v-model="file" label="Archivo" :rules="fileRules")
             v-col(cols="12" md="2")
-              v-btn.primary(type="submit") Subir
+              v-btn.primary(type="submit" :disabled="!file") Subir
 
         v-data-table(:headers="fileHeaders" :items="files")
           template(#item.options="{ item }")
             v-btn.primary--text(icon
-            :href="`/api/folder/files/${item.folderid}/${item.hash_name}`")
+            :href="`${downloadUrl}/${item._id}`")
               v-icon mdi-download
+            v-btn.error--text(v-if="canDeleteFiles"
+            icon @click="showDelete(item)")
+              v-icon mdi-trash-can
 
   dialog-search(v-model="dialogSearch" :doSearch="doSearch")
+  dialog-delete(v-model="showDeleteFiles" text="archivo"
+  :doDelete="deleteFile")
 </template>
 
 <script>
 import { folderUrl, fileUrl } from '~/mixins/routes'
+import fileRules from '~/mixins/form-rules/files'
 import generalRules from '~/mixins/form-rules/general-rules'
 
 export default {
-  mixins: [generalRules],
+  mixins: [generalRules, fileRules],
 
   data () {
     return {
@@ -75,8 +81,13 @@ export default {
       search: '',
       dialogFiles: false,
       file: null,
+      fileToDelete: {
+        _id: '',
+        folderid: ''
+      },
       files: [],
       folderid: '',
+      showDeleteFiles: false,
       form: {
         _id: '',
         name: '',
@@ -88,7 +99,7 @@ export default {
   },
 
   head () {
-    return { title: 'Materials' }
+    return { title: 'Folders' }
   },
 
   computed: {
@@ -104,6 +115,21 @@ export default {
         { text: 'Nombre', value: 'real_name' },
         { text: 'Opciones', value: 'options' }
       ]
+    },
+    formTitle () {
+      return this.form._id ? 'Editar carpeta' : 'Crear carpeta'
+    },
+    canUpdate () {
+      return this.$ability.can('update', 'Carpetas')
+    },
+    canCreateFiles () {
+      return this.$ability.can('create', 'Archivos de carpetas')
+    },
+    canDeleteFiles () {
+      return this.$ability.can('delete', 'Archivos de carpetas')
+    },
+    downloadUrl () {
+      return `${fileUrl}download`
     }
   },
 
@@ -111,11 +137,11 @@ export default {
     options: {
       handler () {
         this.getData()
-      },
-      file (value) {
-        if (!value) {
-          this.$refs.formFiles.resetValidation()
-        }
+      }
+    },
+    file (value) {
+      if (!value) {
+        this.$refs.formFile.resetValidation()
       }
     },
     dialogEdit (value) {
@@ -135,6 +161,10 @@ export default {
         this.$refs.formFile && this.$refs.formFile.resetValidation()
       }
     }
+  },
+
+  beforeMount () {
+    this.moduleSlug = 'Carpetas'
   },
 
   methods: {
@@ -189,6 +219,25 @@ export default {
         const { message } = await this.$axios.$put(fileUrl, formData)
         this.getFiles({ _id: this.folderid })
         this.file = null
+        this.showSnackbar(message)
+      } catch (err) {
+        this.showSnackbar(err)
+      }
+    },
+    async showDelete (item) {
+      try {
+        this.fileToDelete = await this.$axios.$get(`${fileUrl}${item._id}`)
+        this.showDeleteFiles = true
+      } catch (err) {
+        this.showSnackbar(err)
+      }
+    },
+    async deleteFile () {
+      try {
+        const { message } = await this.$axios.$delete(
+          `${fileUrl}${this.fileToDelete._id}`)
+        this.getFiles({ _id: this.folderid })
+        this.showDeleteFiles = false
         this.showSnackbar(message)
       } catch (err) {
         this.showSnackbar(err)

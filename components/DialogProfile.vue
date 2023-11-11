@@ -72,12 +72,13 @@ v-dialog(:value="dialog" max-width="600px" scrollable
 
 <script>
 import { photoUrl, accountProfileUrl, changePasswordUrl } from '~/mixins/routes'
+import fileRules from '~/mixins/form-rules/files'
 import generalRules from '~/mixins/form-rules/general-rules'
 import passwordRules from '~/mixins/form-rules/passwords'
 
 export default {
   name: 'ProfilePage',
-  mixins: [generalRules, passwordRules],
+  mixins: [generalRules, passwordRules, fileRules],
 
   model: {
     prop: 'dialog',

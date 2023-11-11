@@ -180,6 +180,7 @@ export default {
 
   beforeMount () {
     this.moduleSlug = 'Acudientes'
+    this.canViewPage()
   },
 
   methods: {

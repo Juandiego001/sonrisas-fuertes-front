@@ -15,7 +15,9 @@ export default {
     }
   },
 
-  beforeMount () {},
+  beforeMount () {
+    this.moduleSlug = 'Inicio'
+  },
 
   methods: {
     login () {
