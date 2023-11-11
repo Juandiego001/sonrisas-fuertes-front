@@ -3,7 +3,7 @@ import { mapMutations } from 'vuex'
 export default {
   computed: {
     allowSearchIcon () {
-      return ['Publicaciones', 'Actividades', 'Comentarios',
+      return ['Publicaciones', 'Actividades',
         'Carpetas', 'Perfiles', 'Administradores', 'Profesores', 'Acudientes',
         'Estudiantes']
     },
