@@ -48,11 +48,12 @@ v-container(fluid)
         ref="formFile" @submit.prevent="saveFile")
           v-row(align="center")
             v-col(cols="12" md="10")
-              v-file-input(v-model="file" label="Archivo" :rules="fileRules")
+              v-file-input(v-model="filesInput" label="Archivos"
+              chips small-chips multiple :rules="fileRules")
             v-col(cols="12" md="2")
-              v-btn.primary(type="submit" :disabled="!file") Subir
+              v-btn.primary(type="submit" :disabled="!filesInput") Subir
 
-        v-data-table(:headers="fileHeaders" :items="files")
+        v-data-table(:headers="fileHeaders" :items="filesFolder")
           template(#item.options="{ item }")
             v-btn.primary--text(icon
             :href="`${downloadUrl}/${item._id}`")
@@ -80,18 +81,17 @@ export default {
       items: [],
       search: '',
       dialogFiles: false,
-      file: null,
+      filesInput: null,
+      filesFolder: [],
+      folderid: '',
+      showDeleteFiles: false,
       fileToDelete: {
         _id: '',
         folderid: ''
       },
-      files: [],
-      folderid: '',
-      showDeleteFiles: false,
       form: {
         _id: '',
         name: '',
-        status: false,
         updated_by: '',
         updated_at: ''
       }
@@ -139,7 +139,7 @@ export default {
         this.getData()
       }
     },
-    file (value) {
+    filesInput (value) {
       if (!value) {
         this.$refs.formFile.resetValidation()
       }
@@ -148,15 +148,15 @@ export default {
       if (!value) {
         this.$refs.form.resetValidation()
         this.$refs.form.reset()
+        this.form = { _id: '', name: '', updated_by: '', updated_at: '' }
       } else {
         this.$refs.form && this.$refs.form.resetValidation()
-        this.$refs.formFile && this.$refs.formFile.resetValidation()
       }
     },
     dialogFiles (value) {
       if (!value) {
-        this.$refs.formFile && this.$refs.formFile.resetValidation()
-        this.$refs.formFile && this.$refs.formFile.reset()
+        this.$refs.formFile.resetValidation()
+        this.$refs.formFile.reset()
       } else {
         this.$refs.formFile && this.$refs.formFile.resetValidation()
       }
@@ -203,7 +203,7 @@ export default {
     async getFiles (item) {
       try {
         this.folderid = item._id
-        this.files = (await this.$axios.$get(
+        this.filesFolder = (await this.$axios.$get(
           `${folderUrl}folder/files/${item._id}`)).items
         this.dialogFiles = true
       } catch (err) {
@@ -215,10 +215,12 @@ export default {
         if (!this.$refs.formFile.validate()) { return }
         const formData = new FormData()
         formData.append('folderid', this.folderid)
-        formData.append('file', this.file)
-        const { message } = await this.$axios.$put(fileUrl, formData)
+        for (const file of this.filesInput) {
+          formData.append('files', file)
+        }
+        const { message } = await this.$axios.$put(`${fileUrl}multiple-files`, formData)
         this.getFiles({ _id: this.folderid })
-        this.file = null
+        this.filesInput = null
         this.showSnackbar(message)
       } catch (err) {
         this.showSnackbar(err)

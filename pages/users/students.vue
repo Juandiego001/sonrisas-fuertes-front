@@ -12,7 +12,7 @@ v-container(fluid)
       | {{ getUserStatus(item.status) }}
 
   v-dialog(v-model="dialogEdit" max-width="600px"
-    :fullscreen="$vuetify.breakpoint.smAndDown" scrollable)
+  :fullscreen="$vuetify.breakpoint.smAndDown" scrollable)
     v-form(ref="form" @submit.prevent="saveUser")
       v-card(flat :tile="$vuetify.breakpoint.smAndDown")
         v-card-title.primary.white--text
@@ -32,7 +32,7 @@ v-container(fluid)
                 v-row(dense)
                   v-col(cols="12" md="6")
                     v-select(v-model="create" label="Registrar como"
-                    :items="createOptions")
+                    :items="createOptions" item-text="text" item-value="value")
                   v-col.primary--text(cols="12" md="12")
                     | Información del {{ create.toLowerCase() }}
                   v-col(cols="12" md="6")
@@ -57,6 +57,10 @@ v-container(fluid)
                     v-file-input(v-model="photo" filled dense
                     prepend-inner-icon="mdi-paperclip" :prepend-icon="null"
                     label="Foto" hide-details="auto")
+              v-card-actions
+                v-spacer
+                v-btn(color="primary" depressed @click="onboarding++")
+                  | Siguiente
           v-window-item
             v-card(flat)
               v-card-text.my-3
@@ -89,6 +93,12 @@ v-container(fluid)
                   v-col(cols="12" md="6")
                     v-checkbox(v-model="form.godfather" label="¿Tiene padrino?"
                     hide-details="auto")
+              v-card-actions
+                v-spacer
+                v-btn(color="primary" depressed @click="onboarding--")
+                  | Atrás
+                v-btn(color="primary" depressed @click="onboarding++").ms-1
+                  | Siguiente
           v-window-item
             v-card(flat)
               v-card-text.my-3
@@ -120,9 +130,11 @@ v-container(fluid)
                   v-col.text-caption.text-md-right(cols="12" md="6")
                     | Modificado por: {{ form.updated_by }}
                     | {{ $moment(form.updated_at) }}
-        v-card-actions
-          v-spacer
-          v-btn(color="primary" depressed type="submit") Guardar
+              v-card-actions
+                v-spacer
+                v-btn(color="primary" depressed @click="onboarding--")
+                  | Atrás
+                v-btn(color="primary" depressed type="submit").ms-1 Guardar
   dialog-search(v-model="dialogSearch" :doSearch="doSearch")
 </template>
 
@@ -145,17 +157,13 @@ export default {
       items: [],
       tutors: [],
       onboarding: 0,
-      create: 'Estudiante',
+      create: '',
       menu: false,
       activePicker: null,
       form: {
         _id: '',
         name: '',
-        lastname: '',
-        document: '',
-        username: '',
-        email: '',
-        password: ''
+        lastname: ''
       },
       photo: null,
       search: ''
@@ -198,10 +206,13 @@ export default {
         : `Crear ${this.create.toLocaleLowerCase()}`
     },
     genders () {
-      return ['Niño', 'Niña']
+      return [{ text: 'Niño', value: 'Niño' }, { text: 'Niña', value: 'Niña' }]
     },
     createOptions () {
-      return ['Estudiante', 'Paciente']
+      return [
+        { text: 'Estudiante', value: 'Estudiante' },
+        { text: 'Paciente', value: 'Paciente' }
+      ]
     },
     maxDate () {
       return (new Date(Date.now() -
@@ -215,10 +226,12 @@ export default {
     dialogEdit (value) {
       if (!value) {
         this.$refs.form.reset()
-        this.form._id = ''
+        this.$refs.form.resetValidation()
+        this.form = { _id: '', name: '', lastname: '' }
         this.onboarding = 0
-        this.create = 'Estudiante'
+        this.create = ''
       } else {
+        this.create = this.form._id ? this.create : 'Estudiante'
         this.getTutors()
         this.$refs.form && this.$refs.form.resetValidation()
       }
@@ -285,6 +298,7 @@ export default {
     },
     getUser (item) {
       if (item.username) {
+        this.create = 'Estudiante'
         this.getStudent(item)
       } else {
         this.create = 'Paciente'

@@ -8,6 +8,8 @@ v-container(fluid)
       v-btn.mr-2(v-if="item.status === 'PENDING'" depressed icon
         @click="resendLink(item)")
         v-icon mdi-email-fast
+    template(#item.status="{ item }")
+      | {{ getUserStatus(item.status) }}
 
   v-dialog(v-model="dialogEdit" max-width="600px"
   :fullscreen="$vuetify.breakpoint.smAndDown" scrollable)
@@ -51,6 +53,10 @@ v-container(fluid)
                     v-file-input(v-model="photo" filled dense
                     prepend-inner-icon="mdi-paperclip" :prepend-icon="null"
                     label="Foto" hide-details="auto")
+              v-card-actions
+                v-spacer
+                v-btn(color="primary" depressed @click="onboarding++")
+                  | Siguiente
           v-window-item
             v-card(flat)
               v-card-text.my-3
@@ -59,7 +65,7 @@ v-container(fluid)
                     | Información del acudiente
                   v-col(cols="12" md="6")
                     text-field(v-model="form.kinship"
-                    label="Parentesco" :rules="[]")
+                    label="Parentesco" :rules="generalRules")
                   v-col(cols="12" md="6")
                     text-field(v-model="form.phone"
                     label="Teléfono" :rules="phoneRules")
@@ -75,9 +81,11 @@ v-container(fluid)
                   v-col.text-caption.text-md-right(cols="12" md="6")
                     | Modificado por: {{ form.updated_by }}
                     | {{ $moment(form.updated_at) }}
-        v-card-actions
-          v-spacer
-          v-btn(color="primary" depressed type="submit") Guardar
+              v-card-actions
+                v-spacer
+                v-btn(color="primary" depressed @click="onboarding--")
+                  | Atrás
+                v-btn(color="primary" depressed type="submit").ms-1 Guardar
   dialog-search(v-model="dialogSearch" :doSearch="doSearch")
 </template>
 
@@ -100,18 +108,14 @@ export default {
       total: -1,
       items: [],
       onboarding: 0,
+      photo: null,
+      search: '',
       form: {
         _id: '',
         name: '',
         lastname: '',
-        document: '',
-        username: '',
-        email: '',
-        password: '',
-        status: ''
-      },
-      photo: null,
-      search: ''
+        username: ''
+      }
     }
   },
 
@@ -170,7 +174,7 @@ export default {
     dialogEdit (value) {
       if (!value) {
         this.$refs.form.reset()
-        this.form._id = ''
+        this.form = { _id: '', name: '', lastname: '', username: '' }
         this.onboarding = 0
       } else {
         this.$refs.form && this.$refs.form.resetValidation()
@@ -227,6 +231,11 @@ export default {
       } catch (err) {
         this.showSnackbar(err)
       }
+    },
+    getUserStatus (status) {
+      return status === 'ACTIVE'
+        ? 'Activo'
+        : status === 'INACTIVE' ? 'Inactivo' : 'Pendiente de activación'
     },
     doSearch (value) {
       this.search = value

@@ -44,7 +44,7 @@ v-app
         NuxtLink.white--text.text-decoration-none(:to="item.to") {{ item.name }}
         v-icon(v-if="index != breadcrumbs.length - 1") mdi-chevron-right
     v-spacer
-    v-btn(v-if="canSearch" icon @click="dialogSearch=true" )
+    v-btn(v-if="canSearch" icon @click="dialogSearch=true")
       v-icon mdi-magnify
     v-btn(v-if="canCreate" icon @click="dialogEdit=true")
       v-icon mdi-plus

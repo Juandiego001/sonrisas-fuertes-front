@@ -9,8 +9,8 @@ export default {
                 return 'El tamaño máximo de los archivos es 20 MB'
               }
             }
+            return true
           } else { return 'Se debe agregar un archivo válido' }
-          return true
         }
       ]
     }

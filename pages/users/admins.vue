@@ -8,6 +8,8 @@ v-container(fluid)
       v-btn.mr-2(v-if="item.status === 'PENDING'" depressed icon
         @click="resendLink(item)")
         v-icon mdi-email-fast
+    template(#item.status="{ item }")
+      | {{ getUserStatus(item.status) }}
 
   v-dialog(v-model="dialogEdit" max-width="600px"
     :fullscreen="$vuetify.breakpoint.smAndDown" scrollable)
@@ -78,18 +80,14 @@ export default {
       options: {},
       total: -1,
       items: [],
+      photo: null,
+      search: '',
       form: {
         _id: '',
         name: '',
         lastname: '',
-        document: '',
-        username: '',
-        email: '',
-        password: '',
-        status: ''
-      },
-      photo: null,
-      search: ''
+        username: ''
+      }
     }
   },
 
@@ -131,7 +129,7 @@ export default {
     dialogEdit (value) {
       if (!value) {
         this.$refs.form.reset()
-        this.form._id = ''
+        this.form = { _id: '', name: '', lastname: '', username: '' }
       } else {
         this.$refs.form && this.$refs.form.resetValidation()
       }
@@ -187,6 +185,11 @@ export default {
       } catch (err) {
         this.showSnackbar(err)
       }
+    },
+    getUserStatus (status) {
+      return status === 'ACTIVE'
+        ? 'Activo'
+        : status === 'INACTIVE' ? 'Inactivo' : 'Pendiente de activación'
     },
     doSearch (value) {
       this.search = value
